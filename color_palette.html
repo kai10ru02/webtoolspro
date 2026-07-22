@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>カラーパレット抽出ツール | WebTools Pro</title>
-    <link rel="icon" href="logo.jpg">
     
+    <title>画像からカラーパレット抽出・カラーコード取得ツール | 無料・ブラウザ完結 - WebTools Pro</title>
+    <meta name="description" content="画像（PNG/JPEGなど）をドラッグ＆ドロップするだけで、主要なカラーパレット（HEX・RGB）を自動抽出。さらに画像上の好きな場所をタップ（クリック）して手動でカラーコードを取得できるスポイト機能も搭載。完全無料で安全です。">
+    
+    <meta property="og:title" content="画像からカラーパレット抽出・カラーコード取得ツール - WebTools Pro">
+    <meta property="og:description" content="画像から主要な色をAI解析で自動抽出＆スポイト機能で好きな色を取得。サーバー送信なしで安全な無料Webツール。">
+    <meta property="og:type" content="website">
+
+    <link rel="icon" href="logo.jpg">
     <link rel="stylesheet" href="style.css">
     
     <style>
@@ -27,6 +33,7 @@
             font-size: 0.85rem;
             color: var(--text-muted);
             margin-bottom: 35px;
+            line-height: 1.6;
         }
 
         .drop-zone {
@@ -67,6 +74,7 @@
             padding: 25px;
         }
 
+        /* プレビュー画像とスポイト機能のツールチップ */
         .preview-wrapper {
             text-align: center;
             margin-bottom: 25px;
@@ -78,13 +86,65 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            max-height: 300px;
+            max-height: 400px;
+            position: relative; /* ツールチップ配置用 */
+            cursor: crosshair;  /* カーソルを十字(スポイト風)に */
         }
         .preview-wrapper img {
             max-width: 100%;
-            max-height: 280px;
+            max-height: 380px;
             object-fit: contain;
             border-radius: 4px;
+        }
+
+        /* スポイトのツールチップデザイン */
+        .hover-tooltip {
+            position: absolute;
+            pointer-events: none; /* マウスイベントを画像に貫通させる */
+            display: none;
+            align-items: center;
+            gap: 8px;
+            background: rgba(15, 17, 35, 0.9);
+            border: 1px solid var(--primary-cyan);
+            padding: 6px 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 0.9rem;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+            transition: opacity 0.1s ease;
+        }
+        .tooltip-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* 画像クリック時のコピー完了メッセージ */
+        .copy-toast-center {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: #2ecc71;
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .copy-toast-center.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
         }
 
         /* カラーパレットの表示部分 */
@@ -94,7 +154,6 @@
             gap: 15px;
             justify-content: center;
         }
-
         .color-box {
             width: 100px;
             display: flex;
@@ -113,7 +172,6 @@
             background: rgba(255, 255, 255, 0.1);
             border-color: var(--primary-cyan);
         }
-
         .color-circle {
             width: 60px;
             height: 60px;
@@ -122,21 +180,19 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             border: 2px solid rgba(255, 255, 255, 0.2);
         }
-
         .color-hex {
             font-size: 0.85rem;
             font-weight: bold;
             font-family: monospace;
             color: #d1d1e9;
         }
-
         .color-rgb {
             font-size: 0.7rem;
             color: #7f8c8d;
             margin-top: 2px;
         }
 
-        /* コピー完了のトースト（ポップアップ） */
+        /* カラーボックスのコピートースト */
         .toast {
             position: absolute;
             top: -30px;
@@ -156,6 +212,32 @@
         }
 
         .status-msg { text-align: center; font-size: 0.9rem; margin-top: 15px; font-weight: bold; color: var(--primary-cyan); }
+
+        /* 追加：SEO用テキストエリアのスタイル設定 */
+        .tool-description-section {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #d1d1e9;
+            line-height: 1.7;
+        }
+        .tool-description-section h2 {
+            font-size: 1.3rem;
+            color: #fff;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-cyan, #00f2fe);
+            padding-left: 10px;
+        }
+        .tool-description-section ul, .tool-description-section ol {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        .tool-description-section li { margin-bottom: 8px; }
+        .tool-description-section dl { margin-bottom: 20px; }
+        .tool-description-section dt { font-weight: bold; color: #fff; margin-top: 12px; }
+        .tool-description-section dd { margin-left: 0; margin-bottom: 12px; color: #a0a0b8; }
+        .highlight-text { color: var(--primary-cyan); font-weight: bold; }
     </style>
 </head>
 <body>
@@ -175,8 +257,8 @@
 
     <main>
         <div class="container">
-            <h2 class="tool-heading">カラーパレット抽出ツール</h2>
-            <div class="subtitle">画像から主要な5色をAIアルゴリズムで解析・抽出。クリックでカラーコードをコピーできます。</div>
+            <h1 class="tool-heading">カラーパレット＆スポイト抽出ツール</h1>
+            <div class="subtitle">AIによる主要カラーの自動抽出と、<span class="highlight-text">画像にカーソルを合わせる（タップする）と好きな場所の色を取得できるスポイト機能</span>を搭載しています。</div>
 
             <div class="drop-zone" id="drop-zone" onclick="document.getElementById('image-input').click()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -193,12 +275,41 @@
             <div class="status-msg" id="status-msg"></div>
 
             <div class="result-area" id="result-area">
-                <div class="preview-wrapper">
+                <div class="preview-wrapper" id="preview-wrapper">
                     <img id="preview-image" src="" alt="プレビュー">
+                    <div id="hover-tooltip" class="hover-tooltip"></div>
                 </div>
                 
+                <div style="text-align: center; color: #a0a0b8; font-size: 0.85rem; margin-bottom: 10px;">▼ AIが自動抽出した代表的な5色 ▼</div>
                 <div class="palette-container" id="palette-container"></div>
             </div>
+
+            <div id="copy-toast-center" class="copy-toast-center">Copied!</div>
+
+            <section class="tool-description-section">
+                <h2>このカラー抽出ツールの特徴</h2>
+                <ul>
+                    <li><strong>直感的なスポイト機能（手動抽出）:</strong> 画像上の気になる色にカーソルを合わせる（スマホなら指でなぞる）だけで、そのピクセルのカラーコードをリアルタイム表示。クリックすると即座にコピーできます。</li>
+                    <li><strong>AIによる代表カラー自動抽出:</strong> 画像を読み込んだ瞬間に、画像内で最も使われている美しい主要カラー5色を自動解析し、パレットとして提示します。</li>
+                    <li><strong>サーバー送信不要で完全安全:</strong> 画像の読み込みや色の解析処理はすべてお使いのブラウザ内（ローカル）で行われます。画像データが外部サーバーへ送信されることはないため、未公開のデザイン素材でも安心してご利用いただけます。</li>
+                </ul>
+
+                <h2>カラーコードの取得方法</h2>
+                <ol>
+                    <li>「ファイルを選択」をクリックするか、解析したい画像（PNG, JPEG, WEBPなど）をエリアへドラッグ＆ドロップします。</li>
+                    <li><strong>【自動抽出】</strong> 画像下部にAIが解析した5色のカラーパレットが表示されます。ブロックをクリックするとコピーできます。</li>
+                    <li><strong>【手動抽出(スポイト)】</strong> 画像の上にカーソルを合わせるとツールチップが表示されます。欲しい色の場所で画像をクリックするとカラーコードがコピーされます。</li>
+                </ol>
+
+                <h2>よくある質問 (FAQ)</h2>
+                <dl>
+                    <dt>Q. スマホからでもスポイト機能は使えますか？</dt>
+                    <dd>A. はい、スマートフォンやタブレットからでも、画像の上を指でタップ（またはドラッグ）することで色の確認と取得が可能です。</dd>
+                    
+                    <dt>Q. 取得できるカラーコードの形式は何ですか？</dt>
+                    <dd>A. Webデザインやイラスト制作で最も標準的な「16進数（HEXコード: 例 #00F2FE）」と、「RGB数値」の両方を確認できます。クリップボードにはHEXコードがコピーされます。</dd>
+                </dl>
+            </section>
         </div>
     </main>
 
@@ -218,9 +329,14 @@
         const statusMsg = document.getElementById("status-msg");
         const resultArea = document.getElementById("result-area");
         const previewImg = document.getElementById("preview-image");
+        const previewWrapper = document.getElementById("preview-wrapper");
         const paletteContainer = document.getElementById("palette-container");
+        const hoverTooltip = document.getElementById("hover-tooltip");
+        const copyToastCenter = document.getElementById("copy-toast-center");
 
-        // ドラッグ＆ドロップイベント設定
+        let fullCanvas, fullCtx; // スポイト用の裏側キャンバス
+
+        // --- ドラッグ＆ドロップイベント ---
         ['dragenter', 'dragover'].forEach(eventName => {
             dropZone.addEventListener(eventName, (e) => { e.preventDefault(); dropZone.classList.add('dragover'); }, false);
         });
@@ -238,10 +354,11 @@
             event.target.value = '';
         }
 
+        // --- 画像の読み込みと解析 ---
         function loadImage(file) {
             statusMsg.innerText = "画像を解析中...";
             resultArea.style.display = "none";
-            paletteContainer.innerHTML = ""; // 前の結果をクリア
+            paletteContainer.innerHTML = "";
 
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -250,7 +367,14 @@
                     previewImg.src = img.src;
                     resultArea.style.display = "block";
                     
-                    // 画像の色を抽出
+                    // スポイト用の実寸Canvasを裏で作成
+                    fullCanvas = document.createElement('canvas');
+                    fullCanvas.width = img.naturalWidth;
+                    fullCanvas.height = img.naturalHeight;
+                    fullCtx = fullCanvas.getContext('2d');
+                    fullCtx.drawImage(img, 0, 0);
+
+                    // AI画像色の抽出
                     extractColors(img);
                 };
                 img.src = e.target.result;
@@ -258,11 +382,76 @@
             reader.readAsDataURL(file);
         }
 
-        // Canvasを使ってピクセルデータを取得し、K-means法で色を抽出する関数
+        // --- 手動スポイト（Hover Picker）機能 ---
+        let currentHoverHex = ""; // コピー用の一時保存変数
+
+        function handleImageHover(e) {
+            if (!fullCtx) return;
+
+            let clientX = e.clientX;
+            let clientY = e.clientY;
+            
+            // スマホのタッチ操作対応
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            }
+
+            const rect = previewImg.getBoundingClientRect();
+            const wrapperRect = previewWrapper.getBoundingClientRect();
+
+            // 画像の範囲外ならツールチップを消す
+            if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) {
+                hoverTooltip.style.display = "none";
+                return;
+            }
+
+            // 画面上の座標を画像の実際のピクセル座標に変換
+            const scaleX = fullCanvas.width / rect.width;
+            const scaleY = fullCanvas.height / rect.height;
+            const x = Math.floor((clientX - rect.left) * scaleX);
+            const y = Math.floor((clientY - rect.top) * scaleY);
+
+            // ピクセルの色を取得
+            const pixel = fullCtx.getImageData(x, y, 1, 1).data;
+            // 透明ピクセルの場合は無視
+            if(pixel[3] === 0) {
+                hoverTooltip.style.display = "none";
+                return;
+            }
+
+            currentHoverHex = rgbToHex(pixel[0], pixel[1], pixel[2]);
+
+            // ツールチップの表示更新
+            hoverTooltip.style.display = "flex";
+            hoverTooltip.innerHTML = `<div class="tooltip-color" style="background-color: ${currentHoverHex};"></div><span>${currentHoverHex}</span>`;
+            
+            // カーソルに追従させる（wrapper内の相対座標）
+            hoverTooltip.style.left = (clientX - wrapperRect.left + 15) + "px";
+            hoverTooltip.style.top = (clientY - wrapperRect.top + 15) + "px";
+        }
+
+        // マウスとタッチのイベントリスナー
+        previewImg.addEventListener('mousemove', handleImageHover);
+        previewImg.addEventListener('touchmove', handleImageHover);
+        
+        previewImg.addEventListener('mouseleave', () => {
+            hoverTooltip.style.display = "none";
+            currentHoverHex = "";
+        });
+
+        // 画像をクリック（タップ）した時にコピーする
+        previewImg.addEventListener('click', () => {
+            if (currentHoverHex) {
+                copyToClipboardCenter(currentHoverHex);
+            }
+        });
+
+        // --- AI (K-means) による自動色抽出 ---
         function extractColors(img) {
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
-            const maxDim = 100; // 100x100のサイズで解析
+            const maxDim = 100;
             const scale = Math.min(maxDim / img.width, maxDim / img.height);
             canvas.width = img.width * scale;
             canvas.height = img.height * scale;
@@ -271,7 +460,7 @@
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
             const pixels = [];
             for (let i = 0; i < imageData.length; i += 4) {
-                if (imageData[i + 3] > 125) { // 透明ピクセルは無視
+                if (imageData[i + 3] > 125) { 
                     pixels.push({ r: imageData[i], g: imageData[i + 1], b: imageData[i + 2] });
                 }
             }
@@ -279,11 +468,10 @@
             setTimeout(() => {
                 const colors = kMeans(pixels, 5);
                 displayPalette(colors);
-                statusMsg.innerText = "抽出完了！色をクリックするとカラーコードをコピーできます。";
+                statusMsg.innerHTML = "画像上の気になる部分を<strong>クリック・タップ</strong>すると色をコピーできます✨";
             }, 50);
         }
 
-        // K-meansクラスタリング
         function kMeans(pixels, k) {
             let centroids = [];
             for (let i = 0; i < k; i++) {
@@ -340,14 +528,13 @@
 
         function displayPalette(colors) {
             paletteContainer.innerHTML = "";
-            
             colors.forEach(color => {
                 const hex = rgbToHex(color.r, color.g, color.b);
                 const rgbStr = `${color.r}, ${color.g}, ${color.b}`;
 
                 const box = document.createElement("div");
                 box.className = "color-box";
-                box.onclick = () => copyToClipboard(hex, box);
+                box.onclick = () => copyToClipboardBox(hex, box);
 
                 box.innerHTML = `
                     <div class="toast">Copied!</div>
@@ -355,19 +542,28 @@
                     <div class="color-hex">${hex}</div>
                     <div class="color-rgb">rgb(${rgbStr})</div>
                 `;
-                
                 paletteContainer.appendChild(box);
             });
         }
 
-        function copyToClipboard(text, boxElement) {
+        // --- クリップボードコピー処理 ---
+        
+        // パレットボックスクリック時のコピー
+        function copyToClipboardBox(text, boxElement) {
             navigator.clipboard.writeText(text).then(() => {
                 const toast = boxElement.querySelector(".toast");
                 toast.classList.add("show");
                 setTimeout(() => toast.classList.remove("show"), 1500);
-            }).catch(err => {
-                console.error('コピーに失敗しました', err);
-            });
+            }).catch(err => console.error('コピー失敗', err));
+        }
+
+        // 画像直接クリック時のコピー（画面中央にトースト表示）
+        function copyToClipboardCenter(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                copyToastCenter.innerText = `Copied! ${text}`;
+                copyToastCenter.classList.add("show");
+                setTimeout(() => copyToastCenter.classList.remove("show"), 1500);
+            }).catch(err => console.error('コピー失敗', err));
         }
     </script>
 </body>

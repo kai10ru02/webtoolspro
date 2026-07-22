@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ボイスレコーダー＆ボイスチェンジャー | WebTools Pro</title>
+    
+    <title>ボイスチェンジャー＆録音(ボイスレコーダー)ツール | 無料・ブラウザ完結 - WebTools Pro</title>
+    <meta name="description" content="マイク録音や音声ファイルに対応した無料ボイスチェンジャー。ヘリウム声、ロボット、モンスターなどに一瞬で加工し、MP3やWAVで保存可能。インストール不要・サーバー送信なしの完全ローカル処理で安全です。">
+    
+    <meta property="og:title" content="ボイスチェンジャー＆録音ツール - WebTools Pro">
+    <meta property="og:description" content="ブラウザ上で録音・音声加工ができる安全な無料ツール。自分の声をロボットやヘリウム声に簡単に変えられます。">
+    <meta property="og:type" content="website">
+
+    <link rel="icon" href="logo.jpg">
     <link rel="stylesheet" href="style.css">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
@@ -12,7 +20,27 @@
     <style>
         /* ==== ボイスチェンジャー固有のスタイル ==== */
         .container {
-            max-width: 700px;
+            max-width: 800px;
+        }
+
+        .tool-heading {
+            text-align: center;
+            background: linear-gradient(45deg, #a55eea, #4facfe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 35px;
         }
 
         /* 録音・アップロードの入力エリア */
@@ -151,6 +179,41 @@
         .status-loading { color: #a55eea; }
         .status-success { color: #00f2fe; }
         .status-error { color: #e74c3c; }
+
+        /* ==== SEO用テキストセクション ==== */
+        .seo-content {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #d1d1e9;
+            line-height: 1.7;
+        }
+        .seo-content h2 {
+            font-size: 1.25rem;
+            color: #fff;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 4px solid #a55eea;
+            padding-left: 10px;
+        }
+        .seo-content ul, .seo-content ol {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        .seo-content li {
+            margin-bottom: 8px;
+        }
+        .seo-content dt {
+            font-weight: bold;
+            color: #a55eea;
+            margin-top: 15px;
+            margin-bottom: 4px;
+        }
+        .seo-content dd {
+            margin-left: 0;
+            margin-bottom: 15px;
+            color: #a0a0b8;
+        }
     </style>
 </head>
 <body>
@@ -168,72 +231,103 @@
         </nav>
     </header>
 
-    <main class="container">
-        <h2>ボイスチェンジャー＆レコーダー</h2>
-        <div class="subtitle">マイクで録音、または音声をアップロードして、様々な声に加工して保存できます。</div>
+    <main>
+        <div class="container">
+            <h1 class="tool-heading">ボイスチェンジャー＆レコーダー</h1>
+            <div class="subtitle">マイクで録音、または音声をアップロードして、様々な声に加工して保存できます。</div>
 
-        <div class="input-methods">
-            <div class="record-zone" id="record-zone" onclick="toggleRecording()">
-                <div class="zone-icon">🎙️</div>
-                <div class="zone-text" id="record-text">クリックして録音開始</div>
-                <div class="record-time" id="record-time">00:00</div>
-            </div>
-            
-            <div class="drop-zone" id="drop-zone" onclick="document.getElementById('audio-input').click()">
-                <div class="zone-icon">📁</div>
-                <div class="zone-text">音声ファイルを<br>選択 or ドロップ</div>
-            </div>
-            <input type="file" id="audio-input" accept="audio/*" style="display: none;" onchange="handleFileSelect(event)">
-        </div>
-
-        <div class="status-msg" id="main-status"></div>
-
-        <div class="editor-panel" id="editor-panel">
-            <button class="play-btn" id="play-btn" onclick="togglePlay()">▶ 加工した声をプレビュー</button>
-
-            <div class="slider-header" style="margin-bottom:5px;"><span>ワンタッチ プリセット</span></div>
-            <div class="preset-grid">
-                <div class="preset-btn active" onclick="applyPreset('normal', this)">ノーマル</div>
-                <div class="preset-btn" onclick="applyPreset('helium', this)">🎈 ヘリウム</div>
-                <div class="preset-btn" onclick="applyPreset('monster', this)">👹 モンスター</div>
-                <div class="preset-btn" onclick="applyPreset('robot', this)">🤖 ロボット</div>
-                <div class="preset-btn" onclick="applyPreset('alien', this)">👽 エイリアン</div>
-                <div class="preset-btn" onclick="applyPreset('bath', this)">🛁 お風呂場</div>
-                <div class="preset-btn" onclick="applyPreset('fast', this)">⏩ 早送り</div>
-                <div class="preset-btn" onclick="applyPreset('slow', this)">🐌 スロー</div>
-            </div>
-
-            <div class="slider-group">
-                <div class="slider-header">
-                    <span>声の高さ (ピッチ)</span>
-                    <span class="val-badge" id="pitch-val">±0</span>
+            <div class="input-methods">
+                <div class="record-zone" id="record-zone" onclick="toggleRecording()">
+                    <div class="zone-icon">🎙️</div>
+                    <div class="zone-text" id="record-text">クリックして録音開始</div>
+                    <div class="record-time" id="record-time">00:00</div>
                 </div>
-                <input type="range" id="pitch-slider" min="-12" max="12" step="1" value="0" oninput="updateCustomParams()">
-            </div>
-
-            <div class="slider-group">
-                <div class="slider-header">
-                    <span>再生速度</span>
-                    <span class="val-badge" id="speed-val">1.0x</span>
+                
+                <div class="drop-zone" id="drop-zone" onclick="document.getElementById('audio-input').click()">
+                    <div class="zone-icon">📁</div>
+                    <div class="zone-text">音声ファイルを<br>選択 or ドロップ</div>
                 </div>
-                <input type="range" id="speed-slider" min="0.5" max="2.0" step="0.1" value="1.0" oninput="updateCustomParams()">
+                <input type="file" id="audio-input" accept="audio/*" style="display: none;" onchange="handleFileSelect(event)">
             </div>
 
-            <div class="format-selection">
-                <div class="radio-group">
-                    <label class="radio-label checked" id="lbl-mp3">
-                        <input type="radio" name="out-format" value="mp3" checked onchange="toggleFormatStyle()"> MP3保存
-                    </label>
-                    <label class="radio-label" id="lbl-wav">
-                        <input type="radio" name="out-format" value="wav" onchange="toggleFormatStyle()"> WAV保存
-                    </label>
+            <div class="status-msg" id="main-status"></div>
+
+            <div class="editor-panel" id="editor-panel">
+                <button class="play-btn" id="play-btn" onclick="togglePlay()">▶ 加工した声をプレビュー</button>
+
+                <div class="slider-header" style="margin-bottom:5px;"><span>ワンタッチ プリセット</span></div>
+                <div class="preset-grid">
+                    <div class="preset-btn active" onclick="applyPreset('normal', this)">ノーマル</div>
+                    <div class="preset-btn" onclick="applyPreset('helium', this)">🎈 ヘリウム</div>
+                    <div class="preset-btn" onclick="applyPreset('monster', this)">👹 モンスター</div>
+                    <div class="preset-btn" onclick="applyPreset('robot', this)">🤖 ロボット</div>
+                    <div class="preset-btn" onclick="applyPreset('alien', this)">👽 エイリアン</div>
+                    <div class="preset-btn" onclick="applyPreset('bath', this)">🛁 お風呂場</div>
+                    <div class="preset-btn" onclick="applyPreset('fast', this)">⏩ 早送り</div>
+                    <div class="preset-btn" onclick="applyPreset('slow', this)">🐌 スロー</div>
                 </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>声の高さ (ピッチ)</span>
+                        <span class="val-badge" id="pitch-val">±0</span>
+                    </div>
+                    <input type="range" id="pitch-slider" min="-12" max="12" step="1" value="0" oninput="updateCustomParams()">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>再生速度</span>
+                        <span class="val-badge" id="speed-val">1.0x</span>
+                    </div>
+                    <input type="range" id="speed-slider" min="0.5" max="2.0" step="0.1" value="1.0" oninput="updateCustomParams()">
+                </div>
+
+                <div class="format-selection">
+                    <div class="radio-group">
+                        <label class="radio-label checked" id="lbl-mp3">
+                            <input type="radio" name="out-format" value="mp3" checked onchange="toggleFormatStyle()"> MP3保存
+                        </label>
+                        <label class="radio-label" id="lbl-wav">
+                            <input type="radio" name="out-format" value="wav" onchange="toggleFormatStyle()"> WAV保存
+                        </label>
+                    </div>
+                </div>
+
+                <button class="convert-btn" id="convert-btn" onclick="exportAudio()">この声で変換してダウンロード</button>
+                
+                <div class="progress-wrapper" id="progress-wrapper"><div class="progress-bar" id="progress-bar"></div></div>
+                <div class="status-msg" id="status-msg"></div>
             </div>
 
-            <button class="convert-btn" id="convert-btn" onclick="exportAudio()">この声で変換してダウンロード</button>
-            
-            <div class="progress-wrapper" id="progress-wrapper"><div class="progress-bar" id="progress-bar"></div></div>
-            <div class="status-msg" id="status-msg"></div>
+            <section class="seo-content">
+                <h2>無料ボイスチェンジャー・録音ツールの特徴</h2>
+                <ul>
+                    <li><strong>ブラウザだけで簡単に声を変えられる：</strong> 専用ソフトやアプリのインストールは一切不要です。「ヘリウム声」「ロボット」「モンスター」など、プリセットを選ぶだけで一瞬で面白い声に加工できます。</li>
+                    <li><strong>安心の完全ローカル処理：</strong> あなたの録音した音声やアップロードした音声ファイルは、外部のサーバーには送信されません。端末内（ブラウザ）だけで処理されるため、プライバシーが守られます。</li>
+                    <li><strong>ピッチと速度を細かく調整：</strong> プリセットだけでなく、スライダーを使って声の高さ（ピッチ）や再生速度を自由にカスタマイズ可能です。</li>
+                </ul>
+
+                <h2>使い方・音声加工の手順</h2>
+                <ol>
+                    <li>「クリックして録音開始」を押してマイクで話すか、「音声ファイルを選択」から手持ちのオーディオデータ（MP3, WAVなど）を読み込みます。</li>
+                    <li>「ワンタッチプリセット」から好きな声の種類を選ぶか、スライダーで声の高さと速度を調整します。</li>
+                    <li>「▶ 加工した声をプレビュー」ボタンで、変換後の声を実際に聞いて確認します。</li>
+                    <li>保存形式（MP3 または WAV）を選び、「この声で変換してダウンロード」をクリックして保存します。</li>
+                </ol>
+
+                <h2>よくある質問 (FAQ)</h2>
+                <dl>
+                    <dt>Q. スマホ（iPhoneやAndroid）のマイクでも録音できますか？</dt>
+                    <dd>A. はい、マイクのアクセス許可をオンにしていただければ、スマートフォンからでもそのまま録音・音声加工が可能です。</dd>
+                    
+                    <dt>Q. 自分の声が外部に漏れたりしませんか？</dt>
+                    <dd>A. 当サイトのツールはすべて「クライアントサイド（お使いの端末内）」で動作します。音声データがインターネットを経由して外部に保存されることはないため、安全にご利用いただけます。</dd>
+                    
+                    <dt>Q. YouTubeや動画制作用の音声素材として使えますか？</dt>
+                    <dd>A. はい、加工・ダウンロードした音声データは、動画編集（YouTube、TikTokなど）やゲーム制作などの素材として自由にご活用いただけます。</dd>
+                </dl>
+            </section>
         </div>
     </main>
 
@@ -244,8 +338,8 @@
             <a href="privacy.html">プライバシーポリシー</a>
             <a href="contact.html">お問い合わせ</a>
         </div>
-        &copy; 2026 WebTools Pro. All rights reserved.<br>
-        <span style="font-size: 0.8rem; margin-top: 5px; display: inline-block;">※当サイトのツールは全て端末内（ローカル）で処理されるため、データが外部に送信されることはありません。</span>
+        <div class="copyright">&copy; 2026 WebTools Pro. All rights reserved.</div>
+        <div class="footer-note">※当サイトのツールは全て端末内(ローカル)で処理されるため、データが外部に送信されることはありません。</div>
     </footer>
 
     <script>

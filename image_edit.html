@@ -3,18 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>画像軽量化・画質調整 | WebTools Pro</title>
-    <link rel="icon" href="logo.jpg">
     
+    <title>画像軽量化・サイズ圧縮ツール | 無料・ブラウザ完結で画質を保って縮小 - WebTools Pro</title>
+    <meta name="description" content="画像の解像度や圧縮率を直感的に調整し、ファイル容量を劇的に軽くする完全無料の画像圧縮ツールです。外部サーバーへの送信なし（ブラウザ完結）で安全に処理可能。スマホ・PC対応。ブログやSNSへの投稿に最適です。">
+    
+    <meta property="og:title" content="画像軽量化・サイズ圧縮ツール - WebTools Pro">
+    <meta property="og:description" content="画質を保ったまま画像サイズを劇的に軽くする無料ツール。サーバー送信なしで機密画像も安全です。">
+    <meta property="og:type" content="website">
+
+    <link rel="icon" href="logo.jpg">
     <link rel="stylesheet" href="style.css">
 
     <style>
+        /* ==== ツール固有レイアウト ==== */
         .layout-wrapper {
             display: flex;
             flex-direction: column;
             gap: 25px;
             max-width: 1200px;
-            margin: 40px auto;
+            margin: 40px auto 20px auto;
             padding: 0 20px;
             width: 100%;
             box-sizing: border-box;
@@ -48,7 +55,7 @@
             backdrop-filter: blur(12px);
         }
 
-        h2 {
+        h1 {
             text-align: center;
             background: linear-gradient(45deg, #00f2fe, #4facfe);
             -webkit-background-clip: text;
@@ -56,7 +63,7 @@
             -webkit-text-fill-color: transparent;
             margin-top: 0;
             margin-bottom: 10px;
-            font-size: 1.7rem;
+            font-size: 1.8rem;
             letter-spacing: 1px;
             font-weight: 800;
         }
@@ -212,39 +219,50 @@
             color: rgba(255, 255, 255, 0.3);
         }
         
-        .limit-table-wrapper {
-            overflow-x: auto;
-        }
-        .limit-table-wrapper table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-            min-width: 320px;
-        }
-        .limit-table-wrapper th, .limit-table-wrapper td {
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            text-align: left;
-        }
-        .limit-table-wrapper th {
-            background: rgba(0, 242, 254, 0.1);
-            color: #00f2fe;
-            white-space: nowrap;
-        }
-        .limit-table-wrapper tr:nth-child(even) {
-            background: rgba(255, 255, 255, 0.02);
-        }
-        .limit-table-wrapper td {
-            line-height: 1.4;
-            color: #d1d1e9;
-        }
-        .limit-table-wrapper td:nth-child(2) {
-            font-weight: bold;
-            color: #2ecc71;
-            white-space: nowrap;
-        }
+        .limit-table-wrapper { overflow-x: auto; }
+        .limit-table-wrapper table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 320px; }
+        .limit-table-wrapper th, .limit-table-wrapper td { border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px; text-align: left; }
+        .limit-table-wrapper th { background: rgba(0, 242, 254, 0.1); color: #00f2fe; white-space: nowrap; }
+        .limit-table-wrapper tr:nth-child(even) { background: rgba(255, 255, 255, 0.02); }
+        .limit-table-wrapper td { line-height: 1.4; color: #d1d1e9; }
+        .limit-table-wrapper td:nth-child(2) { font-weight: bold; color: #2ecc71; white-space: nowrap; }
 
         .status-msg { text-align: center; font-size: 0.9rem; margin-top: 15px; font-weight: bold; color: #e74c3c; }
+
+        /* ==== SEO用テキストセクションのデザイン ==== */
+        .seo-content {
+            padding-top: 20px;
+        }
+        .seo-content h2 {
+            font-size: 1.3rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            margin-top: 30px;
+            text-align: left;
+            border-left: 4px solid #00f2fe;
+            padding-left: 12px;
+            background: none;
+            -webkit-text-fill-color: #ffffff;
+            text-shadow: none;
+        }
+        .seo-content p, .seo-content li, .seo-content dd {
+            color: #8b949e;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        .seo-content ul, .seo-content ol {
+            padding-left: 20px;
+            margin-bottom: 30px;
+        }
+        .seo-content li { margin-bottom: 8px; }
+        .seo-content strong { color: #c9d1d9; }
+        .seo-content dt {
+            font-weight: bold;
+            color: #00f2fe;
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
+        .seo-content dd { margin-bottom: 20px; margin-left: 0; }
     </style>
 </head>
 <body>
@@ -252,7 +270,6 @@
     <header>
         <a href="index.html" class="logo">
             <img src="logo.jpg" alt="WebTools Pro" class="logo-img">
-            <span class="logo-text">WebTools Pro</span>
         </a>
         <nav>
             <a href="index.html">ホーム</a>
@@ -265,7 +282,7 @@
     <main>
         <div class="layout-wrapper">
             <div class="container">
-                <h2>画像軽量化・画質調整ツール</h2>
+                <h1>画像軽量化・画質調整ツール</h1>
                 <div class="subtitle">「解像度（サイズ）」と「圧縮率（画質）」を落として、ファイル容量を劇的に軽くします。</div>
 
                 <div class="drop-zone" id="drop-zone" onclick="document.getElementById('image-input').click()">
@@ -380,6 +397,36 @@
                 </div>
             </div>
         </div>
+
+        <div class="container" style="max-width: 1200px; margin-top: 0; margin-bottom: 40px;">
+            <section class="seo-content">
+                <h2>画像軽量化・圧縮ツールの特徴・メリット</h2>
+                <ul>
+                    <li><strong>完全無料で無制限：</strong> 面倒な会員登録やインストールは一切不要。何枚でも無料で圧縮・軽量化が可能です。</li>
+                    <li><strong>サーバー送信なしで安全：</strong> 読み込んだ画像はあなたのパソコン・スマホ（ブラウザ）の内部だけで処理されます。外部に送信されないため、顔写真や機密情報を含んだ画像でも安心です。</li>
+                    <li><strong>直感的なスライダー操作：</strong> 「解像度」と「画質」のスライダーを動かすだけで、変換後の予想サイズと画質をリアルタイムにプレビュー確認できます。</li>
+                </ul>
+
+                <h2>画像圧縮の使い方・手順</h2>
+                <ol>
+                    <li>「ここに画像ファイルをドラッグ＆ドロップ」のエリアに、軽くしたい画像（JPG, PNG, WebPなど）を入れます。</li>
+                    <li>スライダーを動かして、解像度（画像の大きさ）と圧縮率（画質）を調整します。</li>
+                    <li>「変換後の予想」のファイルサイズを確認し、問題なければ「この設定で軽量化して保存する」ボタンを押してダウンロードします。</li>
+                </ol>
+
+                <h2>よくある質問 (FAQ)</h2>
+                <dl>
+                    <dt>Q. スマホ（iPhoneやAndroid）からでも使えますか？</dt>
+                    <dd>A. はい、スマートフォンやタブレットのブラウザからも問題なくご利用いただけます。</dd>
+                    
+                    <dt>Q. 元の画像ファイルは消えてしまいますか？</dt>
+                    <dd>A. いいえ、処理後の画像は「_reduced.jpg」という別のファイル名で新しくダウンロード保存されるため、元の高画質な画像が上書きされて消えることはありません。</dd>
+                    
+                    <dt>Q. 保存される画像の形式は何ですか？</dt>
+                    <dd>A. 最もファイルサイズを軽くするのに適した「JPEG (.jpg) 形式」に自動変換されて保存されます。</dd>
+                </dl>
+            </section>
+        </div>
     </main>
 
     <footer>
@@ -389,8 +436,8 @@
             <a href="privacy.html">プライバシーポリシー</a>
             <a href="contact.html">お問い合わせ</a>
         </div>
-        &copy; 2026 WebTools Pro. All rights reserved.<br>
-        <span style="font-size: 0.8rem; margin-top: 5px; display: inline-block;">※当サイトのツールは全て端末内（ローカル）で処理されるため、データが外部に送信されることはありません。</span>
+        <div class="copyright">&copy; 2026 WebTools Pro. All rights reserved.</div>
+        <div class="footer-note">※当サイトのツールは全て端末内(ローカル)で処理されるため、データが外部に送信されることはありません。</div>
     </footer>
 
     <script>

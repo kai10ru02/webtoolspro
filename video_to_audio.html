@@ -3,14 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>動画から音声抽出ツール | WebTools Pro</title>
-    <link rel="icon" href="logo.jpg">
     
+    <title>動画から音声抽出・MP3変換ツール | 無料・ブラウザ完結 - WebTools Pro</title>
+    <meta name="description" content="MP4やWebMなどの動画ファイルから音声（BGMやセリフ）だけを抽出し、MP3やWAV形式で保存できる無料Webツール。アップロード不要の完全ローカル処理なので、プライベートな動画でも安全・高速に変換できます。">
+    
+    <meta property="og:title" content="動画から音声抽出・MP3変換ツール - WebTools Pro">
+    <meta property="og:description" content="動画から音声を抜き出して高音質MP3/WAVで保存。サーバー送信なしで安全な無料ツールです。">
+    <meta property="og:type" content="website">
+
+    <link rel="icon" href="logo.jpg">
     <link rel="stylesheet" href="style.css">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
     
     <style>
-        .tool-heading {
+        /* ==== ツール固有のスタイル ==== */
+        h1 {
             text-align: center;
             background: linear-gradient(45deg, var(--primary-cyan), #4facfe);
             -webkit-background-clip: text;
@@ -18,7 +26,7 @@
             -webkit-text-fill-color: transparent;
             margin-top: 0;
             margin-bottom: 10px;
-            font-size: 1.7rem;
+            font-size: 1.8rem;
             letter-spacing: 1px;
             font-weight: 800;
         }
@@ -131,6 +139,40 @@
         .status-success { color: var(--primary-cyan); }
         .status-error { color: #e74c3c; }
         .status-loading { color: #a55eea; }
+
+        /* ==== SEO用テキストセクション ==== */
+        .seo-content {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .seo-content h2 {
+            font-size: 1.25rem;
+            color: #ffffff;
+            margin-bottom: 15px;
+            margin-top: 30px;
+            text-align: left;
+            border-left: 3px solid var(--primary-cyan);
+            padding-left: 10px;
+        }
+        .seo-content p, .seo-content li, .seo-content dd {
+            color: #8b949e;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+        .seo-content ul, .seo-content ol {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        .seo-content li { margin-bottom: 6px; }
+        .seo-content strong { color: var(--primary-cyan); }
+        .seo-content dt {
+            font-weight: bold;
+            color: var(--primary-cyan);
+            margin-top: 15px;
+            margin-bottom: 4px;
+        }
+        .seo-content dd { margin-bottom: 15px; margin-left: 0; }
     </style>
 </head>
 <body>
@@ -150,7 +192,7 @@
 
     <main>
         <div class="container">
-            <h2 class="tool-heading">動画から音声抽出ツール</h2>
+            <h1>動画から音声抽出ツール</h1>
             <div class="subtitle">MP4やWebMなどの動画ファイルから、音声部分だけを抜き出して保存します。</div>
 
             <div class="drop-zone" id="drop-zone" onclick="document.getElementById('video-input').click()">
@@ -196,6 +238,34 @@
                 <div class="progress-bar" id="progress-bar"></div>
             </div>
             <div class="status-msg" id="status-msg"></div>
+
+            <section class="seo-content">
+                <h2>動画から音声を抽出するツールの特徴</h2>
+                <ul>
+                    <li><strong>完全ブラウザ完結で安全：</strong> アップロードされた動画は外部のサーバーに一切送信されません。あなたのパソコンやスマートフォンの内部（ローカル環境）だけで処理されるため、プライベートな動画でも安全に音声を抽出できます。</li>
+                    <li><strong>高速かつ無制限に変換：</strong> サーバーへのアップロードやダウンロードの待ち時間が発生しないため、大容量の動画ファイルでもあっという間に処理が完了します。回数やサイズの制限もありません。</li>
+                    <li><strong>MP3とWAVの高音質保存に対応：</strong> 抽出した音声は、世界で最も汎用的なMP3形式、または音質劣化のないWAV形式のどちらかを選んで保存できます。</li>
+                </ul>
+
+                <h2>音声抽出の使い方・手順</h2>
+                <ol>
+                    <li>上のエリアに、音声を抜き出したい動画ファイル（MP4, WebMなど）をドラッグ＆ドロップします。</li>
+                    <li>抽出後の保存形式を「MP3」か「WAV」から選択します。</li>
+                    <li>「音声を抽出して保存」ボタンを押すと処理が開始され、自動的に音声ファイルがダウンロードされます。</li>
+                </ol>
+
+                <h2>よくある質問 (FAQ)</h2>
+                <dl>
+                    <dt>Q. どんな動画形式に対応しています-ますか？</dt>
+                    <dd>A. MP4, WebM, MOVなど、お使いのブラウザが標準で対応している一般的な動画形式であれば音声を抽出可能です。</dd>
+                    
+                    <dt>Q. 長時間の動画（映画など）でも抽出できますか？</dt>
+                    <dd>A. サーバー側の制限はありませんが、ブラウザのメモリを使用して処理を行うため、数時間におよぶ極端に大きな動画の場合は、お使いの端末のスペック（メモリ容量）によって処理が停止する場合があります。</dd>
+
+                    <dt>Q. 元の動画ファイルが壊れたり画質が落ちたりしませんか？</dt>
+                    <dd>A. いいえ。当ツールは動画の中から「音声データだけをコピーして抜き出す」処理を行うため、元の動画ファイルには一切影響を与えません。</dd>
+                </dl>
+            </section>
         </div>
     </main>
 
@@ -229,7 +299,6 @@
         });
         dropZone.addEventListener('drop', (e) => {
             const file = e.dataTransfer.files[0];
-            // 動画ファイルかどうかをチェック
             if (file && file.type.startsWith('video/')) { loadFile(file); }
             else { alert('動画ファイル（MP4など）を選択してください。'); }
         }, false);

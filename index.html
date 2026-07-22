@@ -3,24 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebTools Pro | 無料・安全なローカル処理ツール群</title>
-    <link rel="icon" href="logo.jpg">
     
-    <meta property="og:title" content="WebTools Pro">
-    <meta property="og:description" content="サーバーへのアップロード不要。すべてブラウザ上で完結するため、機密データやプライベートファイルも安全・高速に処理できる高機能ツールボックスです。">
+    <title>WebTools Pro | 無料・安全なブラウザ完結の便利ツールボックス</title>
+    <meta name="description" content="画像圧縮、PDF結合、音声変換、QRコード生成など、日常の作業をスマートにする高機能ツール群。すべてブラウザ上で完結しサーバー送信しないため、機密データも安全に処理できます。完全無料・登録不要。">
+    
+    <meta property="og:title" content="WebTools Pro | 無料・安全な便利ツールボックス">
+    <meta property="og:description" content="サーバーへのアップロード不要。すべてブラウザ上で完結するため、機密データやプライベートファイルも安全・高速に処理できる高機能ツール群です。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://あなたのサイトURL.com">
     <meta property="og:image" content="logo.jpg">
     <meta name="twitter:card" content="summary_large_image">
 
+    <link rel="icon" href="logo.jpg">
+    
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        .seo-content {
+            max-width: 1200px;
+            margin: 60px auto 40px auto;
+            padding: 40px 20px 0 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .seo-content h2 {
+            font-size: 1.4rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            margin-top: 30px;
+            text-align: left;
+            border-left: 4px solid #00f2fe;
+            padding-left: 12px;
+            background: none;
+            -webkit-text-fill-color: #ffffff;
+            text-shadow: none;
+        }
+        .seo-content p, .seo-content li, .seo-content dd {
+            color: #8b949e;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        .seo-content ul {
+            padding-left: 20px;
+            margin-bottom: 30px;
+        }
+        .seo-content li { margin-bottom: 8px; }
+        .seo-content strong { color: #00f2fe; }
+        .seo-content dt {
+            font-weight: bold;
+            color: #00f2fe;
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
+        .seo-content dd { margin-bottom: 20px; margin-left: 0; }
+    </style>
 </head>
 <body>
 
     <header>
         <a href="index.html" class="logo">
             <img src="logo.jpg" alt="WebTools Pro" class="logo-img">
-            <span class="logo-text">WebTools Pro</span>
+            <span class="logo-text" style="margin-left: 10px; font-weight: bold; font-size: 1.2rem; color: #fff;">WebTools Pro</span>
         </a>
         <nav>
             <a href="index.html" class="active">ホーム</a>
@@ -30,83 +72,108 @@
         </nav>
     </header>
 
-    <section class="hero">
-        <h1>あなたの作業を、もっと<span>スマート</span>に。</h1>
-        <p>サーバーへのアップロード不要。すべてあなたのブラウザ上で完結するため、機密データやプライベートなファイルも安全・高速に処理できる高機能ツールボックスです。</p>
-    </section>
+    <main>
+        <section class="hero">
+            <h1>あなたの作業を、もっと<span>スマート</span>に。</h1>
+            <p>サーバーへのアップロード不要。すべてあなたのブラウザ上で完結するため、機密データやプライベートなファイルも安全・高速に処理できる高機能ツールボックスです。</p>
+        </section>
 
-    <section class="tools-container">
+        <section class="tools-container">
+            <div class="tool-card">
+                <div class="tool-icon">🖼️</div>
+                <div class="tool-title">画像軽量化・画質調整</div>
+                <div class="tool-desc">解像度や圧縮率を直感的にスライダーで調整。SNSやブログ用に、画質を保ったまま画像サイズを劇的に軽くします。</div>
+                <a href="image_edit.html" class="btn-primary">ツールを開く</a>
+            </div>
 
-        <div class="tool-card">
-            <div class="tool-icon">🖼️</div>
-            <div class="tool-title">画像軽量化・画質調整</div>
-            <div class="tool-desc">解像度や圧縮率を直感的にスライダーで調整。SNSやブログ用に、画質を保ったまま画像サイズを劇的に軽くします。</div>
-            <a href="image_edit.html" class="btn-primary">ツールを開く</a>
-        </div>
+            <div class="tool-card">
+                <div class="tool-icon">🎵</div>
+                <div class="tool-title">オーディオコンバーター</div>
+                <div class="tool-desc">M4A, FLAC, WAVなどの様々な音楽ファイルを、世界中で最も使いやすいMP3やWAV形式へ安全に一括変換します。</div>
+                <a href="audio.html" class="btn-primary">ツールを開く</a>
+            </div>
 
-        <div class="tool-card">
-            <div class="tool-icon">🎵</div>
-            <div class="tool-title">オーディオコンバーター</div>
-            <div class="tool-desc">M4A, FLAC, WAVなどの様々な音楽ファイルを、世界中で最も使いやすいMP3やWAV形式へ安全に一括変換します。</div>
-            <a href="audio.html" class="btn-primary">ツールを開く</a>
-        </div>
+            <div class="tool-card">
+                <div class="tool-icon">🎛️</div>
+                <div class="tool-title">キー・再生速度 変換</div>
+                <div class="tool-desc">高音質エンジン搭載。音楽のキー（音程）や再生速度（テンポ）をプレビューしながら調整し、そのまま保存できます。</div>
+                <a href="audio_edit.html" class="btn-primary">ツールを開く</a>
+            </div>
 
-        <div class="tool-card">
-            <div class="tool-icon">🎛️</div>
-            <div class="tool-title">キー・再生速度 変換</div>
-            <div class="tool-desc">高音質エンジン搭載。音楽のキー（音程）や再生速度（テンポ）をプレビューしながら調整し、そのまま保存できます。</div>
-            <a href="audio_edit.html" class="btn-primary">ツールを開く</a>
-        </div>
+            <div class="tool-card">
+                <div class="tool-icon">📄</div>
+                <div class="tool-title">安全・簡単 PDF結合</div>
+                <div class="tool-desc">複数のPDFファイルをドラッグ＆ドロップで順番を入れ替え、1つのPDFに素早く結合します。</div>
+                <a href="pdf.html" class="btn-primary">ツールを開く</a>
+            </div>
 
-        <div class="tool-card">
-            <div class="tool-icon">📄</div>
-            <div class="tool-title">安全・簡単 PDF結合</div>
-            <div class="tool-desc">複数のPDFファイルをドラッグ＆ドロップで順番を入れ替え、1つのPDFに素早く結合します。</div>
-            <a href="pdf.html" class="btn-primary">ツールを開く</a>
-        </div>
+            <div class="tool-card">
+                <div class="tool-icon">📲</div>
+                <div class="tool-title">QRコード生成</div>
+                <div class="tool-desc">添付されたリンクのQRコードを生成します。URLやテキストを入力するだけで即座に作成可能です。</div>
+                <a href="qrcode.html" class="btn-primary">ツールを開く</a>
+            </div>
+           
+            <div class="tool-card">
+                <div class="tool-icon">🎬</div>
+                <div class="tool-title">動画から音声抽出</div>
+                <div class="tool-desc">スマホ等で撮った動画（MP4等）から、音声部分だけを綺麗に抜き出してMP3やWAVとして保存します。</div>
+                <a href="video_to_audio.html" class="btn-primary">ツールを開く</a>
+            </div>
 
-        <div class="tool-card">
-            <div class="tool-icon">📲</div>
-            <div class="tool-title">QRコード生成</div>
-            <div class="tool-desc">添付されたリンクのQRコードを生成します。URLやテキストを入力するだけで即座に作成可能です。</div>
-            <a href="qrcode.html" class="btn-primary">ツールを開く</a>
-        </div>
-       
-        <div class="tool-card">
-            <div class="tool-icon">🎬</div>
-            <div class="tool-title">動画から音声抽出</div>
-            <div class="tool-desc">スマホ等で撮った動画（MP4等）から、音声部分だけを綺麗に抜き出してMP3やWAVとして保存します。</div>
-            <a href="video_to_audio.html" class="btn-primary">ツールを開く</a>
-        </div>
+            <div class="tool-card">
+                <div class="tool-icon">🎨</div>
+                <div class="tool-title">画像カラーパレット抽出</div>
+                <div class="tool-desc">画像内で使われている代表的な美しい色をAIが自動解析。クリックでカラーコードを瞬時にコピーできます。</div>
+                <a href="color_palette.html" class="btn-primary">ツールを開く</a>
+            </div>
+           
+            <div class="tool-card">
+                <div class="tool-icon">©️</div>
+                <div class="tool-title">透かし(コピーガード)一括追加</div>
+                <div class="tool-desc">数十枚の画像に、あなたの名前やIDの透かしを一括で合成。無断転載防止のための必須ツールです。</div>
+                <a href="watermark.html" class="btn-primary">ツールを開く</a>
+            </div>
 
-        <div class="tool-card">
-            <div class="tool-icon">🎨</div>
-            <div class="tool-title">画像カラーパレット抽出</div>
-            <div class="tool-desc">画像内で使われている代表的な美しい色をAIが自動解析。クリックでカラーコードを瞬時にコピーできます。</div>
-            <a href="color_palette.html" class="btn-primary">ツールを開く</a>
-        </div>
-       
-        <div class="tool-card">
-            <div class="tool-icon">©️</div>
-            <div class="tool-title">透かし(コピーガード)一括追加</div>
-            <div class="tool-desc">数十枚の画像に、あなたの名前やIDの透かしを一括で合成。無断転載防止のための必須ツールです。</div>
-            <a href="watermark.html" class="btn-primary">ツールを開く</a>
-        </div>
+            <div class="tool-card">
+                <div class="tool-icon">🎙️</div>
+                <div class="tool-title">ボイスレコーダー＆チェンジャー</div>
+                <div class="tool-desc">マイクで録音、または音源をアップして「ヘリウム声」「ロボット」など様々な声に加工。ブラウザ完結で安全です。</div>
+                <a href="voice_changer.html" class="btn-primary">ツールを開く</a>
+            </div>
 
-        <div class="tool-card">
-            <div class="tool-icon">🎙️</div>
-            <div class="tool-title">ボイスレコーダー＆チェンジャー</div>
-            <div class="tool-desc">マイクで録音、または音源をアップして「ヘリウム声」「ロボット」など様々な声に加工。ブラウザ完結で安全です。</div>
-            <a href="voice_changer.html" class="btn-primary">ツールを開く</a>
-        </div>
+            <div class="tool-card">
+                <div class="tool-icon">🔐</div>
+                <div class="tool-title">超強固パスワード生成器</div>
+                <div class="tool-desc">暗号論的疑似乱数を用いた、銀行レベルの強固なパスワードを生成。完全オフライン処理のため情報漏洩の心配ゼロです。</div>
+                <a href="password_generator.html" class="btn-primary">ツールを開く</a>
+            </div>
+        </section>
 
-        <div class="tool-card">
-            <div class="tool-icon">🔐</div>
-            <div class="tool-title">超強固パスワード生成器</div>
-            <div class="tool-desc">暗号論的疑似乱数を用いた、銀行レベルの強固なパスワードを生成。完全オフライン処理のため情報漏洩の心配ゼロです。</div>
-            <a href="password_generator.html" class="btn-primary">ツールを開く</a>
-        </div>
-    </section>
+        <section class="seo-content">
+            <h2>WebTools Proとは？</h2>
+            <p>WebTools Proは、日常的なパソコン作業やクリエイティブ制作をサポートする、<strong>完全無料・登録不要のオンラインツールボックス</strong>です。画像の圧縮、PDFの結合、音声ファイルのフォーマット変換など、複数のソフトを立ち上げる必要があった作業を、ブラウザ一つで完結させることができます。</p>
+
+            <h2>当サイトが選ばれる3つの理由</h2>
+            <ul>
+                <li><strong>情報漏洩のリスクゼロ（完全ローカル処理）：</strong> 当サイトの最大の強みは安全性です。アップロードされたファイルは、外部のサーバーには一切送信されず、お使いの端末（ブラウザ内）だけで処理されます。機密文書やプライベートな写真も安心して加工できます。</li>
+                <li><strong>圧倒的な処理スピード：</strong> サーバーとの通信（アップロード・ダウンロード時間）が発生しないため、大容量の動画や音声ファイルでも待たされることなく、一瞬で処理が完了します。</li>
+                <li><strong>直感的でモダンなデザイン：</strong> 専門的な知識は必要ありません。ドラッグ＆ドロップとスライダーの直感的な操作だけで、プロレベルの調整が可能です。</li>
+            </ul>
+
+            <h2>よくある質問 (FAQ)</h2>
+            <dl>
+                <dt>Q. 全てのツールが無料で使えますか？</dt>
+                <dd>A. はい、WebTools Proが提供するすべてのツールは完全無料でご利用いただけます。回数制限やファイルサイズの制限も（お使いの端末のメモリが許す限り）ありません。</dd>
+                
+                <dt>Q. スマホからでも利用できますか？</dt>
+                <dd>A. もちろんです。PC（Windows, Mac）だけでなく、スマートフォンやタブレット（iOS, Android）の標準ブラウザからも快適に動作するように設計されています。</dd>
+
+                <dt>Q. ソフトをインストールする必要はありますか？</dt>
+                <dd>A. 一切不要です。ブラウザ（Chrome, Safari, Edgeなど）を開くだけで、すぐにすべてのツールを利用可能です。</dd>
+            </dl>
+        </section>
+    </main>
 
     <footer>
         <div class="footer-links">
@@ -115,8 +182,8 @@
             <a href="privacy.html">プライバシーポリシー</a>
             <a href="contact.html">お問い合わせ</a>
         </div>
-        &copy; 2026 WebTools Pro. All rights reserved.<br>
-        <span style="font-size: 0.8rem; margin-top: 5px; display: inline-block;">※当サイトのツールは全て端末内（ローカル）で処理されるため、データが外部に送信されることはありません。</span>
+        <div class="copyright">&copy; 2026 WebTools Pro. All rights reserved.</div>
+        <div class="footer-note" style="margin-top: 5px;">※当サイトのツールは全て端末内（ローカル）で処理されるため、データが外部に送信されることはありません。</div>
     </footer>
 
 </body>

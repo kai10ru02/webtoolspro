@@ -3,7 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>高機能 オーディオコンバーター | WebTools Pro</title>
+  
+  <title>高機能 オーディオコンバーター (MP3/WAV変換) | 無料・ブラウザ完結 - WebTools Pro</title>
+  <meta name="description" content="M4A、FLAC、WAVなどの音声ファイルをブラウザ上でMP3やWAV形式へ安全に変換。ファイルはサーバーへ送信されないため機密音声も安心です。ソフトのインストール不要・完全無料でご利用いただけます。">
+  
+  <meta property="og:title" content="高機能 オーディオコンバーター - WebTools Pro">
+  <meta property="og:description" content="サーバー送信なしで安全。M4A, FLAC, WAVなどの音源をブラウザ内でMP3/WAVに高速一括変換できる無料Webツール。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://あなたのサイトURL.com/audio.html">
+  <meta property="og:image" content="logo.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
   <link rel="icon" href="logo.jpg">
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
@@ -137,6 +147,43 @@
       white-space: nowrap;
     }
     .btn-download:hover { background: #00f2fe; color: #0f1123; }
+
+    /* ▼ SEO用コンテンツの追加スタイル ▼ */
+    .seo-content {
+      max-width: 680px;
+      margin: 50px auto 30px auto;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .seo-content h2 {
+      font-size: 1.25rem;
+      color: #ffffff;
+      margin-bottom: 15px;
+      margin-top: 30px;
+      text-align: left;
+      border-left: 3px solid #00f2fe;
+      padding-left: 10px;
+      background: none;
+      -webkit-text-fill-color: #ffffff;
+    }
+    .seo-content p, .seo-content li, .seo-content dd {
+      color: #8b949e;
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+    .seo-content ul, .seo-content ol {
+      padding-left: 20px;
+      margin-bottom: 20px;
+    }
+    .seo-content li { margin-bottom: 6px; }
+    .seo-content strong { color: #00f2fe; }
+    .seo-content dt {
+      font-weight: bold;
+      color: #00f2fe;
+      margin-top: 15px;
+      margin-bottom: 4px;
+    }
+    .seo-content dd { margin-bottom: 15px; margin-left: 0; }
   </style>
 </head>
 <body>
@@ -196,6 +243,34 @@
 
       <div class="file-list" id="fileList"></div>
     </div>
+
+    <section class="seo-content">
+      <h2>このオーディオコンバーターの特徴</h2>
+      <ul>
+        <li><strong>完全ローカル処理で安全（サーバー送信なし）：</strong> 読み込んだ音源ファイルはお使いのPC・スマホのブラウザ上だけで変換処理されます。外部サーバーへ送信されないため、プライベートな音声や機密データでも安心です。</li>
+        <li><strong>多様な入力フォーマットに対応：</strong> iPhoneで録音したM4A（AAC）をはじめ、FLAC, WAV, OGG, WebMなど様々な音声ファイルを汎用性の高いMP3や非圧縮WAVへ変換できます。</li>
+        <li><strong>一括変換＆ビットレート調整機能：</strong> 複数の音声ファイルをドラッグ＆ドロップで同時に一括変換可能です。MP3変換時には用途に合わせてビットレート（128kbps〜320kbps）を選択できます。</li>
+      </ul>
+
+      <h2>音声ファイルの変換手順</h2>
+      <ol>
+        <li>「音楽ファイルをドラッグ＆ドロップ」エリアに音源ファイルを追加します（複数選択可）。</li>
+        <li>出力フォーマット（MP3またはWAV）と、MP3の場合は希望のビットレートを選択します。</li>
+        <li>「データを変換し、保存する」ボタンをクリックすると処理が開始され、完了後にダウンロードボタンが表示されます。</li>
+      </ol>
+
+      <h2>よくある質問 (FAQ)</h2>
+      <dl>
+        <dt>Q. 変換処理に通信量は消費されますか？</dt>
+        <dd>A. ページの読み込み時以外、ファイルの変換処理中にデータ通信は発生しません。オフライン環境でも動作するため、通信量を気にせず大容量のファイルも変換できます。</dd>
+
+        <dt>Q. 変換できるファイルサイズに上限はありますか？</dt>
+        <dd>A. サーバー側の制限は一切ありません。お使いの端末（メモリ容量）が許す限り、大容量の音声ファイルや長時間録音データでも自由に変換可能です。</dd>
+
+        <dt>Q. アプリやフリーソフトのインストールは必要ですか？</dt>
+        <dd>A. 一切不要です。Google Chrome、Safari、Microsoft Edge、Firefoxなど一般的なWEBブラウザがあればすぐにご利用いただけます。</dd>
+      </dl>
+    </section>
   </main>
 
   <footer>

@@ -3,8 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>高音質 キー・再生速度 変換ツール | WebTools Pro</title>
     
+    <title>高音質 キー・再生速度(テンポ)変更ツール | 無料・ブラウザ完結 - WebTools Pro</title>
+    <meta name="description" content="音楽ファイル（MP3, WAVなど）のキー（音程・ピッチ）や再生速度（テンポ）をブラウザ上で高音質に変換できる無料ツール。直感的なプレビュー再生機能付き。サーバー送信なしの完全ローカル処理で安全です。">
+    
+    <meta property="og:title" content="高音質 キー・再生速度変更ツール - WebTools Pro">
+    <meta property="og:description" content="音楽のキー（音程）やテンポを自由に変更し、高音質でMP3/WAV保存できる安全な無料Webツール。">
+    <meta property="og:type" content="website">
+
     <link rel="icon" href="logo.jpg">
     <link rel="stylesheet" href="style.css">
     
@@ -12,7 +18,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
 
     <style>
-        h2 {
+        /* ==== ツール固有のスタイル ==== */
+        h1 {
             text-align: center;
             background: linear-gradient(45deg, #a55eea, #4facfe);
             -webkit-background-clip: text;
@@ -20,7 +27,7 @@
             -webkit-text-fill-color: transparent;
             margin-top: 0;
             margin-bottom: 10px;
-            font-size: 1.7rem;
+            font-size: 1.8rem;
             letter-spacing: 1px;
             font-weight: 800;
         }
@@ -194,6 +201,43 @@
         .status-loading { color: #a55eea; }
         .status-success { color: #00f2fe; }
         .status-error { color: #e74c3c; }
+
+        /* ==== SEO用テキストセクション ==== */
+        .seo-content {
+            max-width: 800px;
+            margin: 50px auto 30px auto;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .seo-content h2 {
+            font-size: 1.25rem;
+            color: #ffffff;
+            margin-bottom: 15px;
+            margin-top: 30px;
+            text-align: left;
+            border-left: 3px solid #a55eea;
+            padding-left: 10px;
+            background: none;
+            -webkit-text-fill-color: #ffffff;
+        }
+        .seo-content p, .seo-content li, .seo-content dd {
+            color: #8b949e;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+        .seo-content ul, .seo-content ol {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        .seo-content li { margin-bottom: 6px; }
+        .seo-content strong { color: #a55eea; }
+        .seo-content dt {
+            font-weight: bold;
+            color: #a55eea;
+            margin-top: 15px;
+            margin-bottom: 4px;
+        }
+        .seo-content dd { margin-bottom: 15px; margin-left: 0; }
     </style>
 </head>
 <body>
@@ -213,7 +257,7 @@
 
     <main>
         <div class="container">
-            <h2>高音質 キー・再生速度 変換ツール</h2>
+            <h1>高音質 キー・再生速度 変換ツール</h1>
             <div class="subtitle">音をクリアにプレビュー調整。聞きたい場所へスキップも可能です。</div>
 
             <div class="drop-zone" id="drop-zone" onclick="document.getElementById('audio-input').click()">
@@ -270,6 +314,35 @@
                 <a id="manual-download-btn" class="download-action-btn" href="#">📥 ここをクリックして保存を完了する</a>
             </div>
         </div>
+
+        <section class="seo-content">
+            <h2>キー・テンポ変更ツールの特徴</h2>
+            <ul>
+                <li><strong>ブラウザ上で高音質処理：</strong> 音楽制作でも使われる高音質エンジン（Tone.js）を使用し、音質の劣化を最小限に抑えながらピッチやスピードを変更できます。</li>
+                <li><strong>リアルタイムのプレビュー再生：</strong> スライダーを動かしてキー（音程）や速度（テンポ）を変更すると、その場ですぐにプレビュー再生して確認できます。シークバーで聞きたい場所にスキップすることも可能です。</li>
+                <li><strong>完全ローカル処理で安全：</strong> アップロードした音声データは外部のサーバーに送信されません。あなたのパソコンやスマートフォンのブラウザ内だけで処理されるため、著作権のある音源やプライベートな録音データでも情報漏洩の心配がありません。</li>
+            </ul>
+
+            <h2>使い方・保存手順</h2>
+            <ol>
+                <li>上のエリアに音楽ファイル（MP3, WAV, M4Aなど）をドラッグ＆ドロップして読み込みます。</li>
+                <li>「▶ プレビュー再生」ボタンを押し、スライダーを動かして好みのキー（±半音）や再生速度（x倍速）に調整します。</li>
+                <li>保存形式（MP3 または WAV）を選び、「この設定で高音質変換してダウンロード」をクリックします。</li>
+                <li>処理が完了すると、変換された音声ファイルが自動的に端末にダウンロードされます。</li>
+            </ol>
+
+            <h2>よくある質問 (FAQ)</h2>
+            <dl>
+                <dt>Q. カラオケの練習用に男性・女性キーへ変更できますか？</dt>
+                <dd>A. はい、可能です。キー変更スライダーを動かすことで、半音単位（+1〜+8、-1〜-8）でピッチを自由に調整できます。</dd>
+                
+                <dt>Q. 変換処理に少し時間がかかるのはなぜですか？</dt>
+                <dd>A. 保存時には、プレビュー時の音よりもさらに高品質な音声ファイルを作成するため、ブラウザ内で精密な音声レンダリング計算を行っているためです（曲の長さによって数秒〜数十秒かかります）。</dd>
+
+                <dt>Q. スマートフォンからでも利用できますか？</dt>
+                <dd>A. はい、iOS（iPhone）やAndroidの標準ブラウザからもご利用可能です。※端末のスペックにより、処理時間がPCよりも長くなる場合があります。</dd>
+            </dl>
+        </section>
     </main>
 
     <footer>

@@ -3,61 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>安全・簡単 PDF結合ツール | WebTools Pro</title>
+    
+    <title>PDF結合・まとめるツール | 無料・無制限・インストール不要 - WebTools Pro</title>
+    <meta name="description" content="複数のPDFファイルをドラッグ＆ドロップで簡単に結合できる無料ツールです。ページの順番入れ替えにも対応。アップロード不要のブラウザ完結型なので、社外秘の書類やプライベートなファイルでも安全に処理できます。">
+    
+    <meta property="og:title" content="PDF結合・まとめるツール - WebTools Pro">
+    <meta property="og:description" content="複数のPDFをブラウザ上で安全に結合・順番入れ替えができる無料ツール。機密ファイルも安心です。">
+    <meta property="og:type" content="website">
+
     <link rel="icon" href="logo.jpg">
     <link rel="stylesheet" href="style.css">
+    
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+    
     <style>
-        /* ==== 全体ベース（フッター下部固定のためのFlexbox設定＆サイバーデザイン） ==== */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
-            color: #ffffff;
-            background-color: #0f1123;
-            background-image:
-                radial-gradient(rgba(255, 75, 108, 0.12) 1.5px, transparent 1.5px),
-                linear-gradient(135deg, #0f1123 0%, #1e102a 100%);
-            background-size: 32px 32px, 100% 100%;
-            background-attachment: fixed;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* ==== ヘッダー（上部固定） ==== */
-        header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 40px; position: sticky; top: 0; z-index: 1000;
-            background: rgba(15, 17, 35, 0.85); backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 75, 108, 0.2); width: 100%;
-        }
-        .logo { display: flex; align-items: center; text-decoration: none; }
-        .logo-img { height: 42px; width: auto; border-radius: 8px; transition: transform 0.2s ease; }
-        .logo-img:hover { transform: scale(1.03); }
-        nav { display: flex; gap: 20px; }
-        nav a { color: #d1d1e9; text-decoration: none; font-size: 0.95rem; font-weight: bold; transition: 0.2s; }
-        nav a:hover, nav a.active { color: #ff4b2b; }
-
-        /* ==== メインコンテンツ ==== */
-        main {
-            flex: 1; padding: 40px 20px; display: flex; flex-direction: column;
-            align-items: center; width: 100%;
-        }
-
-        .container {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 40px;
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-            margin: 0 auto 40px auto;
-            box-sizing: border-box;
-            max-width: 680px;
-            width: 100%;
-            backdrop-filter: blur(12px);
-        }
-
-        h2 {
+        /* ==== ツール固有のスタイル ==== */
+        h1 {
             text-align: center;
             background: linear-gradient(45deg, #ff416c, #ff4b2b);
             -webkit-background-clip: text;
@@ -65,7 +26,7 @@
             -webkit-text-fill-color: transparent;
             margin-top: 0;
             margin-bottom: 10px;
-            font-size: 1.7rem;
+            font-size: 1.8rem;
             letter-spacing: 1px;
             font-weight: 800;
         }
@@ -178,7 +139,7 @@
             box-shadow: 0 0 10px rgba(255, 75, 75, 0.3);
         }
 
-        /* 結合するボタン（ファイヤーネオングラデーション） */
+        /* 結合するボタン */
         .merge-btn {
             width: 100%;
             padding: 15px;
@@ -216,16 +177,42 @@
         .status-error { color: #ff4b2b; }
         .status-loading { color: #00f2fe; }
 
-        /* ==== フッター（下部配置） ==== */
-        footer {
-            width: 100%; background: rgba(0, 0, 0, 0.4); border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 30px 20px; text-align: center; margin-top: auto;
+        /* ==== SEO用テキストセクション ==== */
+        .seo-content {
+            max-width: 800px;
+            margin: 50px auto 30px auto;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .footer-links { display: flex; justify-content: center; gap: 20px; margin-bottom: 15px; }
-        .footer-links a { color: #8c8ca6; text-decoration: none; font-size: 0.9rem; transition: 0.2s; }
-        .footer-links a:hover { color: #ffffff; }
-        .copyright { color: #595973; font-size: 0.85rem; margin-bottom: 5px; }
-        .footer-note { font-size: 0.8rem; color: #595973; display: inline-block; }
+        .seo-content h2 {
+            font-size: 1.25rem;
+            color: #ffffff;
+            margin-bottom: 15px;
+            margin-top: 30px;
+            text-align: left;
+            border-left: 3px solid #ff4b2b;
+            padding-left: 10px;
+            background: none;
+            -webkit-text-fill-color: #ffffff;
+        }
+        .seo-content p, .seo-content li, .seo-content dd {
+            color: #8b949e;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+        .seo-content ul, .seo-content ol {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        .seo-content li { margin-bottom: 6px; }
+        .seo-content strong { color: #ff4b2b; }
+        .seo-content dt {
+            font-weight: bold;
+            color: #ff4b2b;
+            margin-top: 15px;
+            margin-bottom: 4px;
+        }
+        .seo-content dd { margin-bottom: 15px; margin-left: 0; }
     </style>
 </head>
 <body>
@@ -245,7 +232,7 @@
 
   <main>
     <div class="container">
-        <h2>安全・簡単 PDF結合ツール</h2>
+        <h1>安全・簡単 PDF結合ツール</h1>
         <div class="subtitle">ファイルはサーバーに送信されず、あなたのパソコン内だけで安全に処理されます。</div>
 
         <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
@@ -264,6 +251,34 @@
         <button class="merge-btn" id="merge-btn" disabled onclick="processMerge()">PDFを結合してダウンロード</button>
         <div class="status-msg" id="status-msg"></div>
     </div>
+
+    <section class="seo-content">
+        <h2>PDF結合ツールの特徴・メリット</h2>
+        <ul>
+            <li><strong>完全無料で無制限：</strong> 面倒な会員登録やインストールは一切不要。結合するファイルサイズやページ数に制限はなく、何度でも無料でご利用いただけます。</li>
+            <li><strong>情報漏洩を防ぐ完全ローカル処理：</strong> 読み込んだPDFファイルは、外部のサーバーには一切送信されません。すべてお使いのPC・スマホ内で処理されるため、社外秘の契約書や個人情報を含む書類でも安全に結合できます。</li>
+            <li><strong>直感的な並べ替え操作：</strong> ドラッグ＆ドロップでファイルを追加した後、「▲」「▼」ボタンで簡単に結合する順番を入れ替えることができます。</li>
+        </ul>
+
+        <h2>PDFを結合する手順・使い方</h2>
+        <ol>
+            <li>上のエリアに、結合したい複数のPDFファイルをドラッグ＆ドロップして追加します（複数選択も可能です）。</li>
+            <li>追加されたファイルがリスト表示されるので、「▲」「▼」ボタンを押してファイルの順番を自由に並べ替えます。</li>
+            <li>「PDFを結合する」ボタンを押すと、結合されたファイルが即座にダウンロードされます。</li>
+        </ol>
+
+        <h2>よくある質問 (FAQ)</h2>
+        <dl>
+            <dt>Q. ファイルサイズやページ数の制限はありますか？</dt>
+            <dd>A. サーバーを介さないため、お使いのPC/スマホのスペックが許す限り無制限で結合可能です。</dd>
+            
+            <dt>Q. スマートフォンやタブレットからでも使えますか？</dt>
+            <dd>A. はい、iOS（iPhone/iPad）やAndroidの標準ブラウザからも問題なくご利用いただけます。「ファイルを選択」から端末内のPDFを選んでください。</dd>
+
+            <dt>Q. 元のPDFファイルが消えてしまうことはありませんか？</dt>
+            <dd>A. ありません。結合処理後、新しく「merged_document.pdf」という名前の結合済みファイルがダウンロードされるため、元のファイルには一切影響を与えません。</dd>
+        </dl>
+    </section>
   </main>
 
   <footer>
@@ -271,7 +286,7 @@
       <a href="index.html">ホーム</a>
       <a href="terms.html">利用規約</a>
       <a href="privacy.html">プライバシーポリシー</a>
-      <a href="https://twitter.com/あなたのアカウント" target="_blank" rel="noopener noreferrer">お問い合わせ (X)</a>
+      <a href="contact.html">お問い合わせ</a>
     </div>
     <div class="copyright">&copy; 2026 WebTools Pro. All rights reserved.</div>
     <div class="footer-note">※当サイトのツールは全て端末内(ローカル)で処理されるため、データが外部に送信されることはありません。</div>
@@ -443,7 +458,7 @@
         } catch (error) {
             console.error(error);
             statusMsg.className = "status-msg status-error";
-            statusMsg.innerText = "PDFの結合中にエラーが発生しました。ファイルが破損していないかご確認ください。";
+            statusMsg.innerText = "PDFの結合中にエラーが発生しました。ファイルがパスワード保護・破損していないかご確認ください。";
         } finally {
             mergeBtn.disabled = false;
         }

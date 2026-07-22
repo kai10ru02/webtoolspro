@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ウォーターマーク（透かし）一括追加ツール | WebTools Pro</title>
-    <link rel="icon" href="logo.jpg">
     
+    <title>透かし(ウォーターマーク)一括追加ツール | 無料・ブラウザ完結で画像に文字を入れる - WebTools Pro</title>
+    <meta name="description" content="複数の画像に透かし（ウォーターマーク）やコピーライト、ロゴテキストを一括で入れることができる無料Webツールです。サーバーへのアップロード不要で安全。写真の無断転載防止やイラストの著作権保護に最適です。スマホ・PC対応。">
+    
+    <meta property="og:title" content="透かし(ウォーターマーク)一括追加ツール - WebTools Pro">
+    <meta property="og:description" content="数十枚の画像に、あなたの名前やIDの透かしを一瞬で合成。無断転載防止のための安全・無料な必須ツールです。">
+    <meta property="og:type" content="website">
+
+    <link rel="icon" href="logo.jpg">
     <link rel="stylesheet" href="style.css">
     
     <style>
@@ -191,6 +197,41 @@
         @media (max-width: 600px) {
             .settings-grid { grid-template-columns: 1fr; }
         }
+
+        /* ==== SEO用テキストセクション ==== */
+        .seo-content {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #d1d1e9;
+            line-height: 1.7;
+        }
+        .seo-content h2 {
+            font-size: 1.25rem;
+            color: #fff;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-cyan);
+            padding-left: 10px;
+        }
+        .seo-content ul, .seo-content ol {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        .seo-content li {
+            margin-bottom: 8px;
+        }
+        .seo-content dt {
+            font-weight: bold;
+            color: var(--primary-cyan);
+            margin-top: 15px;
+            margin-bottom: 4px;
+        }
+        .seo-content dd {
+            margin-left: 0;
+            margin-bottom: 15px;
+            color: #a0a0b8;
+        }
     </style>
 </head>
 <body>
@@ -210,7 +251,7 @@
 
     <main>
         <div class="container">
-            <h2 class="tool-heading">透かし（ウォーターマーク）一括追加</h2>
+            <h1 class="tool-heading">透かし（ウォーターマーク）一括追加</h1>
             <div class="subtitle">複数の画像に、あなたの名前やロゴテキストを一瞬で合成して保存します。</div>
 
             <div class="drop-zone" id="drop-zone" onclick="document.getElementById('image-input').click()">
@@ -265,6 +306,35 @@
                 <button class="download-btn" id="download-btn" onclick="downloadAll()">📥 全ての画像に透かしを入れて保存</button>
                 <div class="status-msg" id="status-msg"></div>
             </div>
+
+            <section class="seo-content">
+                <h2>画像に透かし（ウォーターマーク）を一括追加するツールの特徴</h2>
+                <ul>
+                    <li><strong>複数画像の一括処理：</strong> 1枚ずつ編集ソフトを開く必要はありません。数十枚の画像データを一度に読み込み、同じ位置・デザインで一瞬にして透かしを追加できます。</li>
+                    <li><strong>機密画像も安心のローカル処理：</strong> アップロードされた画像は外部のサーバーへ送信されません。あなたのパソコンやスマホのブラウザ内だけで処理が完結するため、情報漏洩のリスクはゼロです。</li>
+                    <li><strong>自由なカスタマイズ：</strong> 透かしのテキスト内容（コピーライト、名前、SNSのIDなど）、文字の色、配置場所（右下、中央など）、大きさ、透明度をリアルタイムでプレビューしながら調整できます。</li>
+                </ul>
+
+                <h2>透かし（ウォーターマーク）の入れ方・使い方</h2>
+                <ol>
+                    <li>上の点線エリアに、透かしを入れたい画像（複数選択可）をドラッグ＆ドロップして読み込みます。</li>
+                    <li>「透かしのテキスト」にお好きな文字（例: ©あなたの名前）を入力します。</li>
+                    <li>プレビュー画面を見ながら、テキストの色、配置場所、文字のサイズ、透明度を調整します。</li>
+                    <li>「全ての画像に透かしを入れて保存」ボタンを押すと、すべての画像が自動的にダウンロードされます（※ブラウザで「複数ファイルのダウンロード許可」が出た場合は許可してください）。</li>
+                </ol>
+
+                <h2>よくある質問 (FAQ)</h2>
+                <dl>
+                    <dt>Q. スマホからでも複数画像を一括処理できますか？</dt>
+                    <dd>A. はい、iPhoneやAndroidのスマートフォンからでも、写真アプリ等から複数枚を選択して一括で透かしを入れることが可能です。</dd>
+
+                    <dt>Q. どのような用途におすすめですか？</dt>
+                    <dd>A. ブログやSNS（X、Instagramなど）へアップロードする写真の無断転載・パクリ防止、イラストの著作権保護、ネットショップの商品画像への店名・ロゴテキスト入れなどに最適です。</dd>
+                    
+                    <dt>Q. 料金はかかりますか？</dt>
+                    <dd>A. いいえ、当ツールは完全無料でご利用いただけます。処理枚数の制限もありません。</dd>
+                </dl>
+            </section>
         </div>
     </main>
 
@@ -305,6 +375,8 @@
             dropZone.addEventListener(eventName, (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); }, false);
         });
         dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
             const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
             if (files.length > 0) { loadFiles(files); }
         }, false);
