@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高音質 キー・再生速度 変換ツール | WebTools Pro</title>
+    
+    <link rel="icon" href="logo.jpg">
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
+
+    <style>
+        h2 {
+            text-align: center;
+            background: linear-gradient(45deg, #a55eea, #4facfe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.7rem;
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #b3b3cc;
+            margin-bottom: 30px;
+        }
+
+        /* ドラッグ＆ドロップエリア */
+        .drop-zone {
+            border: 2px dashed rgba(165, 94, 234, 0.5);
+            padding: 30px 20px;
+            border-radius: 16px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-bottom: 25px;
+        }
+        .drop-zone:hover {
+            border-color: #a55eea;
+            background-color: rgba(165, 94, 234, 0.05);
+            box-shadow: 0 0 20px rgba(165, 94, 234, 0.15) inset;
+        }
+        .drop-zone p { margin: 0; font-size: 0.95rem; color: #d1d1e9; font-weight: bold; }
+        .file-select-link { color: #a55eea; text-decoration: underline; }
+
+        /* エディターエリア */
+        .editor-panel {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            display: none;
+        }
+
+        .file-name-display {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #00f2fe;
+            margin-bottom: 20px;
+            text-align: center;
+            word-break: break-all;
+        }
+
+        .play-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 2px solid #a55eea;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 25px;
+            transition: 0.2s;
+        }
+        .play-btn:hover {
+            background: rgba(165, 94, 234, 0.2);
+            box-shadow: 0 0 15px rgba(165, 94, 234, 0.3);
+        }
+        .play-btn.playing {
+            background: #a55eea;
+            color: #fff;
+            border-color: #a55eea;
+            box-shadow: 0 0 20px rgba(165, 94, 234, 0.5);
+        }
+
+        /* スライダー共通デザイン */
+        .slider-group { margin-bottom: 25px; }
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: #d1d1e9;
+        }
+        .val-badge {
+            background: rgba(0, 242, 254, 0.15);
+            color: #00f2fe;
+            padding: 2px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            font-variant-numeric: tabular-nums;
+        }
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 22px; width: 22px;
+            border-radius: 50%;
+            background: #00f2fe;
+            cursor: pointer;
+            margin-top: -9px;
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.8);
+            transition: 0.1s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 5px; cursor: pointer;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
+        }
+
+        /* シークバー用カスタム */
+        .seek-group input[type=range]::-webkit-slider-thumb {
+            background: #a55eea;
+            box-shadow: 0 0 12px rgba(165, 94, 234, 0.8);
+        }
+        .seek-group .val-badge {
+            background: rgba(165, 94, 234, 0.15);
+            color: #b881ff;
+            border: 1px solid rgba(165, 94, 234, 0.3);
+        }
+
+        .format-selection { margin-bottom: 20px; display: none; }
+        .radio-group { display: flex; gap: 10px; }
+        .radio-label {
+            flex: 1; text-align: center; cursor: pointer; font-weight: bold;
+            padding: 10px; border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.2s;
+        }
+        .radio-label input { display: none; }
+        .radio-label.checked {
+            border-color: #00f2fe; background: rgba(0, 242, 254, 0.1); color: #00f2fe;
+        }
+
+        .convert-btn {
+            width: 100%; padding: 16px;
+            background: linear-gradient(135deg, #a55eea 0%, #4facfe 100%);
+            color: #ffffff; border: none; border-radius: 10px;
+            font-size: 1.05rem; font-weight: bold; cursor: pointer;
+            transition: 0.2s; box-shadow: 0 6px 20px rgba(165, 94, 234, 0.3);
+            display: none;
+        }
+        .convert-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(165, 94, 234, 0.5); }
+        .convert-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .download-action-btn {
+            display: inline-block; width: 100%; padding: 16px; box-sizing: border-box;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: #ffffff; border: none; border-radius: 10px; text-decoration: none;
+            font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.2s;
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.3); text-align: center; margin-top: 15px;
+        }
+        .download-action-btn:hover {
+            transform: translateY(-2px); box-shadow: 0 8px 25px rgba(46, 204, 113, 0.5);
+        }
+
+        .progress-wrapper {
+            margin-top: 15px; background: rgba(0,0,0,0.2); border-radius: 10px;
+            padding: 4px; border: 1px solid rgba(255,255,255,0.05); display: none;
+        }
+        .progress-bar {
+            height: 10px; width: 0%; background: linear-gradient(90deg, #a55eea, #4facfe);
+            border-radius: 6px; transition: width 0.1s linear;
+        }
+        .status-msg { text-align: center; font-size: 0.9rem; margin-top: 15px; font-weight: bold; line-height: 1.5; }
+        .status-loading { color: #a55eea; }
+        .status-success { color: #00f2fe; }
+        .status-error { color: #e74c3c; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">
+            <img src="logo.jpg" alt="WebTools Pro" class="logo-img">
+            <span class="logo-text">WebTools Pro</span>
+        </a>
+        <nav>
+            <a href="index.html">ホーム</a>
+            <a href="terms.html">利用規約</a>
+            <a href="privacy.html">プライバシーポリシー</a>
+            <a href="contact.html">お問い合わせ</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2>高音質 キー・再生速度 変換ツール</h2>
+            <div class="subtitle">音をクリアにプレビュー調整。聞きたい場所へスキップも可能です。</div>
+
+            <div class="drop-zone" id="drop-zone" onclick="document.getElementById('audio-input').click()">
+                <p>ここに音楽ファイルをドラッグ＆ドロップするか、<br><span class="file-select-link">ファイルを選択</span></p>
+            </div>
+            <input type="file" id="audio-input" accept="audio/*" style="display: none;" onchange="handleFileSelect(event)">
+
+            <div class="editor-panel" id="editor-panel">
+                <div class="file-name-display" id="display-file-name">music.mp3</div>
+                <button class="play-btn" id="play-btn" onclick="togglePlay()">▶ プレビュー再生</button>
+
+                <div class="slider-group seek-group">
+                    <div class="slider-header">
+                        <span>再生位置 (クリックで移動可能)</span>
+                        <span class="val-badge" id="time-val">00:00 / 00:00</span>
+                    </div>
+                    <input type="range" id="seek-slider" min="0" max="100" value="0" step="0.1" oninput="manualSeekStart()" onchange="manualSeekEnd(this.value)">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>キー変更 (半音)</span>
+                        <span class="val-badge" id="key-val">±0</span>
+                    </div>
+                    <input type="range" id="key-slider" min="-8" max="8" step="1" value="0" oninput="updateParams()">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>再生速度 (テンポ)</span>
+                        <span class="val-badge" id="speed-val">1.0x</span>
+                    </div>
+                    <input type="range" id="speed-slider" min="0.5" max="2.0" step="0.1" value="1.0" oninput="updateParams()">
+                </div>
+            </div>
+
+            <div class="format-selection" id="format-selection">
+                <div class="radio-group">
+                    <label class="radio-label checked" id="lbl-mp3">
+                        <input type="radio" name="out-format" value="mp3" checked onchange="toggleFormatStyle()"> MP3保存
+                    </label>
+                    <label class="radio-label" id="lbl-wav">
+                        <input type="radio" name="out-format" value="wav" onchange="toggleFormatStyle()"> WAV保存
+                    </label>
+                </div>
+            </div>
+
+            <button class="convert-btn" id="convert-btn" onclick="exportAudio()">この設定で高音質変換してダウンロード</button>
+            
+            <div class="progress-wrapper" id="progress-wrapper"><div class="progress-bar" id="progress-bar"></div></div>
+            <div class="status-msg" id="status-msg"></div>
+            
+            <div id="download-area" style="display:none;">
+                <a id="manual-download-btn" class="download-action-btn" href="#">📥 ここをクリックして保存を完了する</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">ホーム</a>
+            <a href="terms.html">利用規約</a>
+            <a href="privacy.html">プライバシーポリシー</a>
+            <a href="contact.html">お問い合わせ</a>
+        </div>
+        <div class="copyright">&copy; 2026 WebTools Pro. All rights reserved.</div>
+        <div class="footer-note">※当サイトのツールは全て端末内(ローカル)で処理されるため、データが外部に送信されることはありません。</div>
+    </footer>
+
+    <script>
+        let grainPlayer;
+        let targetBuffer; 
+        let isPlaying = false;
+        let isUserSeeking = false; 
+        let originalFileName = "audio";
+        let startTime = 0;
+        let basePosition = 0; 
+        let animationFrameId = null;
+
+        const dropZone = document.getElementById("drop-zone");
+        const editorPanel = document.getElementById("editor-panel");
+        const formatSelection = document.getElementById("format-selection");
+        const convertBtn = document.getElementById("convert-btn");
+        const statusMsg = document.getElementById("status-msg");
+        const seekSlider = document.getElementById("seek-slider");
+        const timeVal = document.getElementById("time-val");
+        const downloadArea = document.getElementById("download-area");
+        const manualDownloadBtn = document.getElementById("manual-download-btn");
+
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); }, false);
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('audio/')) { processInputFile(file); }
+        }, false);
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) { processInputFile(file); }
+            event.target.value = '';
+        }
+
+        function toggleFormatStyle() {
+            const isMp3 = document.querySelector('input[name="out-format"]:checked').value === 'mp3';
+            document.getElementById("lbl-mp3").classList.toggle("checked", isMp3);
+            document.getElementById("lbl-wav").classList.toggle("checked", !isMp3);
+        }
+
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec;
+        }
+
+        async function processInputFile(file) {
+            originalFileName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+            document.getElementById("display-file-name").innerText = file.name;
+            
+            statusMsg.className = "status-msg status-loading";
+            statusMsg.innerText = "高音質オーディオエンジンを起動中...";
+            editorPanel.style.display = "none";
+            formatSelection.style.display = "none";
+            convertBtn.style.display = "none";
+            downloadArea.style.display = "none";
+            if(animationFrameId) cancelAnimationFrame(animationFrameId);
+
+            try {
+                await Tone.start();
+                const arrayBuffer = await file.buffer ? await file.buffer() : await file.arrayBuffer();
+                targetBuffer = await Tone.context.decodeAudioData(arrayBuffer);
+
+                setupAudioNodes();
+
+                statusMsg.innerText = "";
+                editorPanel.style.display = "block";
+                formatSelection.style.display = "block";
+                convertBtn.style.display = "block";
+            } catch(e) {
+                console.error(e);
+                statusMsg.className = "status-msg status-error";
+                statusMsg.innerText = "読み込みエラー。ファイル形式をご確認ください。";
+            }
+        }
+
+        function setupAudioNodes() {
+            if (grainPlayer) { grainPlayer.dispose(); }
+
+            grainPlayer = new Tone.GrainPlayer({
+                url: targetBuffer,
+                loop: true,
+                grainSize: 0.1,
+                overlap: 0.05
+            }).toDestination();
+
+            document.getElementById("key-slider").value = 0;
+            document.getElementById("speed-slider").value = 1.0;
+            
+            seekSlider.max = targetBuffer.duration;
+            seekSlider.value = 0;
+            basePosition = 0;
+            timeVal.innerText = "00:00 / " + formatTime(targetBuffer.duration);
+
+            updateParams();
+            
+            isPlaying = false;
+            const playBtn = document.getElementById("play-btn");
+            playBtn.innerText = "▶ プレビュー再生";
+            playBtn.classList.remove("playing");
+        }
+
+        function updateParams() {
+            const key = parseInt(document.getElementById("key-slider").value);
+            const speed = parseFloat(document.getElementById("speed-slider").value);
+
+            document.getElementById("key-val").innerText = (key > 0 ? "+" + key : key);
+            document.getElementById("speed-val").innerText = speed.toFixed(1) + "x";
+
+            if (grainPlayer) {
+                grainPlayer.playbackRate = speed;
+                grainPlayer.detune = key * 100; 
+            }
+        }
+
+        function tickProgress() {
+            if (!isPlaying || isUserSeeking || !targetBuffer) return;
+            const duration = targetBuffer.duration;
+            const speed = parseFloat(document.getElementById("speed-slider").value);
+            
+            let currentPos = basePosition + (Tone.context.now() - startTime) * speed;
+            if (currentPos >= duration) {
+                startTime = Tone.context.now();
+                basePosition = 0;
+                currentPos = 0;
+            }
+
+            seekSlider.value = currentPos;
+            timeVal.innerText = formatTime(currentPos) + " / " + formatTime(duration);
+            animationFrameId = requestAnimationFrame(tickProgress);
+        }
+
+        function manualSeekStart() { isUserSeeking = true; }
+
+        function manualSeekEnd(value) {
+            const seekTime = parseFloat(value);
+            basePosition = seekTime;
+            startTime = Tone.context.now();
+            isUserSeeking = false;
+
+            if (isPlaying && grainPlayer) {
+                grainPlayer.stop();
+                grainPlayer.start(0, seekTime);
+            }
+            timeVal.innerText = formatTime(seekTime) + " / " + formatTime(targetBuffer.duration);
+            if (isPlaying) tickProgress();
+        }
+
+        async function togglePlay() {
+            if (!grainPlayer) return;
+            const playBtn = document.getElementById("play-btn");
+            
+            if (isPlaying) {
+                grainPlayer.stop();
+                if(animationFrameId) cancelAnimationFrame(animationFrameId);
+                
+                const speed = parseFloat(document.getElementById("speed-slider").value);
+                basePosition = basePosition + (Tone.context.now() - startTime) * speed;
+                if(basePosition >= targetBuffer.duration) basePosition = 0;
+
+                playBtn.innerText = "▶ プレビュー再生";
+                playBtn.classList.remove("playing");
+                isPlaying = false;
+            } else {
+                await Tone.start();
+                startTime = Tone.context.now();
+                grainPlayer.start(0, basePosition);
+                
+                playBtn.innerText = "■ 停止";
+                playBtn.classList.add("playing");
+                isPlaying = true;
+                tickProgress();
+            }
+        }
+
+        async function exportAudio() {
+            if (!targetBuffer) return;
+            if (isPlaying) togglePlay(); 
+
+            convertBtn.disabled = true;
+            downloadArea.style.display = "none";
+            document.getElementById("progress-wrapper").style.display = "block";
+            document.getElementById("progress-bar").style.width = "5%";
+            statusMsg.className = "status-msg status-loading";
+            
+            statusMsg.innerText = "高音質エフェクトを計算中...（数秒〜数十秒かかります）";
+
+            await new Promise(resolve => setTimeout(resolve, 50));
+
+            const key = parseInt(document.getElementById("key-slider").value);
+            const speed = parseFloat(document.getElementById("speed-slider").value);
+            const format = document.querySelector('input[name="out-format"]:checked').value;
+            const duration = targetBuffer.duration / speed;
+
+            try {
+                const renderedToneBuffer = await Tone.Offline(() => {
+                    const offlinePlayer = new Tone.GrainPlayer({
+                        url: targetBuffer,
+                        playbackRate: speed,
+                        detune: key * 100,
+                        grainSize: 0.1,
+                        overlap: 0.05
+                    }).toDestination();
+                    offlinePlayer.start(0);
+                }, duration);
+
+                document.getElementById("progress-bar").style.width = "40%";
+                
+                const finalAudioBuffer = renderedToneBuffer.get ? renderedToneBuffer.get() : renderedToneBuffer; 
+
+                let resultBlob;
+                if (format === "wav") {
+                    statusMsg.innerText = "高音質WAVファイルを生成中...";
+                    await new Promise(resolve => setTimeout(resolve, 50)); 
+
+                    resultBlob = await audioBufferToWav(finalAudioBuffer, (percent) => {
+                        document.getElementById("progress-bar").style.width = (40 + (percent * 0.6)) + "%";
+                    });
+                } else {
+                    statusMsg.innerText = "高音質MP3へエンコード中...";
+                    await new Promise(resolve => setTimeout(resolve, 50)); 
+
+                    resultBlob = await audioBufferToMp3(finalAudioBuffer, (percent) => {
+                        document.getElementById("progress-bar").style.width = (40 + (percent * 0.6)) + "%";
+                    });
+                }
+
+                const url = URL.createObjectURL(resultBlob);
+                const fileName = `${originalFileName}_K${key > 0 ? '+'+key : key}_S${speed}.${format}`;
+
+                manualDownloadBtn.href = url;
+                manualDownloadBtn.download = fileName;
+                downloadArea.style.display = "block";
+
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = fileName;
+                link.click();
+
+                statusMsg.className = "status-msg status-success";
+                statusMsg.innerText = "処理が完了しました！自動で保存されない場合は下の緑色のボタンを押してください。";
+            } catch (error) {
+                console.error(error);
+                statusMsg.className = "status-msg status-error";
+                statusMsg.innerText = "エラーが発生しました: " + (error.message || "処理の中断");
+            } finally {
+                convertBtn.disabled = false;
+            }
+        }
+
+        async function audioBufferToWav(buffer, onProgress) {
+            let numOfChan = buffer.numberOfChannels,
+                length = buffer.length * numOfChan * 2 + 44,
+                bufferArr = new ArrayBuffer(length), view = new DataView(bufferArr),
+                channels = [], i, sample, offset = 0, pos = 0;
+                
+            function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+            function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+            setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157);
+            setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(numOfChan);
+            setUint32(buffer.sampleRate); setUint32(buffer.sampleRate * numOfChan * 2);
+            setUint16(numOfChan * 2); setUint16(16); setUint32(0x61746164);
+            setUint32(length - pos - 4);
+            
+            for (i = 0; i < numOfChan; i++) channels.push(buffer.getChannelData(i));
+            
+            let chunkFrames = 44100; 
+            let totalFrames = buffer.length;
+
+            while (offset < totalFrames) {
+                let endFrame = Math.min(offset + chunkFrames, totalFrames);
+                while (offset < endFrame) {
+                    for (i = 0; i < numOfChan; i++) {
+                        sample = Math.max(-1, Math.min(1, channels[i][offset]));
+                        sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+                        view.setInt16(pos, sample, true); pos += 2;
+                    }
+                    offset++;
+                }
+                if (onProgress) {
+                    let percent = Math.floor((offset / totalFrames) * 100);
+                    onProgress(percent);
+                }
+                await new Promise(res => setTimeout(res, 0));
+            }
+            return new Blob([bufferArr], { type: "audio/wav" });
+        }
+
+        async function audioBufferToMp3(buffer, onProgress) {
+            const channels = buffer.numberOfChannels;
+            const mp3encoder = new lamejs.Mp3Encoder(channels, buffer.sampleRate, 128);
+            const mp3Data = [];
+            const sampleBlockSize = 1152;
+            const leftData = buffer.getChannelData(0);
+            const rightData = channels > 1 ? buffer.getChannelData(1) : leftData;
+
+            const convertFloat32ToInt16 = (f32Arr) => {
+                const i16Arr = new Int16Array(f32Arr.length);
+                for (let i = 0; i < f32Arr.length; i++) {
+                    let s = Math.max(-1, Math.min(1, f32Arr[i]));
+                    i16Arr[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+                }
+                return i16Arr;
+            };
+
+            const leftInt16 = convertFloat32ToInt16(leftData);
+            const rightInt16 = convertFloat32ToInt16(rightData);
+            let i = 0; 
+            const totalSamples = leftInt16.length;
+            
+            let lastYieldTime = performance.now();
+
+            while (i < totalSamples) {
+                const leftChunk = leftInt16.subarray(i, i + sampleBlockSize);
+                const rightChunk = rightInt16.subarray(i, i + sampleBlockSize);
+                let mp3buf = (channels === 1) ? mp3encoder.encodeBuffer(leftChunk) : mp3encoder.encodeBuffer(leftChunk, rightChunk);
+                if (mp3buf.length > 0) mp3Data.push(mp3buf);
+                i += sampleBlockSize;
+                
+                if (performance.now() - lastYieldTime > 30) {
+                    let percent = Math.floor((i / totalSamples) * 100);
+                    if (onProgress) onProgress(percent);
+                    await new Promise(res => setTimeout(res, 0));
+                    lastYieldTime = performance.now();
+                }
+            }
+            const mp3buf = mp3encoder.flush();
+            if (mp3buf.length > 0) mp3Data.push(mp3buf);
+            return new Blob(mp3Data, { type: "audio/mp3" });
+        }
+    </script>
+</body>
+</html>

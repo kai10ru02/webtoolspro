@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お問い合わせ | WebTools Pro</title>
+    
+    <link rel="icon" href="logo.jpg">
+    
+    <meta property="og:title" content="お問い合わせ | WebTools Pro">
+    <meta property="og:description" content="WebTools Proへのご意見、ご要望、バグ報告などはこちらからお願いいたします。">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="logo.jpg">
+    <meta name="twitter:card" content="summary">
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* ベースレイアウト */
+        .contact-modern-wrapper {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        /* 左側：インフォメーションエリア（terms.html風のカードスタイルに変更） */
+        .contact-info-side {
+            background: #f8f9fa; /* 背景色を追加 */
+            padding: 40px 30px; /* 余白を追加 */
+            border-radius: 16px; /* 角丸 */
+            border: 1px solid rgba(0, 0, 0, 0.05); /* うっすらとした枠線 */
+            position: sticky; /* terms.htmlのようにスクロール追従させる */
+            top: 100px;
+            height: fit-content;
+        }
+        .contact-info-side h1 {
+            font-size: 2.2rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #333;
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .contact-info-side p {
+            line-height: 1.8;
+            color: #555; /* 背景色に合わせて少し濃いグレーに調整 */
+            margin-bottom: 30px;
+            font-size: 1.05rem;
+        }
+        .info-card {
+            background: rgba(0, 242, 254, 0.08); /* 背景があるため少し濃く調整 */
+            border-left: 4px solid #00f2fe;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+        }
+        .info-card h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: #333;
+        }
+        .info-card p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        /* 右側：フォームエリア */
+        .contact-form-side {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #444;
+            font-size: 0.95rem;
+        }
+        
+        /* 入力フィールドの装飾 */
+        .input-wrapper {
+            position: relative;
+        }
+        .input-wrapper svg {
+            position: absolute;
+            left: 15px;
+            top: 14px;
+            color: #999;
+            transition: 0.3s;
+        }
+        .form-group input, 
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 14px 14px 45px; /* アイコンの分の余白 */
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            background: #fdfdfd;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+            padding-top: 14px;
+        }
+        
+        /* フォーカス時のアクション */
+        .form-group input:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00f2fe;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(0, 242, 254, 0.1);
+        }
+        .form-group input:focus + svg, 
+        .form-group textarea:focus + svg,
+        .input-wrapper:focus-within svg {
+            color: #00f2fe;
+        }
+
+        /* 送信ボタン */
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 242, 254, 0.4);
+        }
+
+        /* レスポンシブ対応（スマホ表示） */
+        @media (max-width: 768px) {
+            .contact-modern-wrapper {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                padding: 0 15px;
+            }
+            .contact-info-side {
+                position: static; /* スマホでは追従を解除 */
+                padding: 30px 20px;
+            }
+            .contact-form-side {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">
+            <img src="logo.jpg" alt="WebTools Pro" class="logo-img">
+            <span class="logo-text">WebTools Pro</span>
+        </a>
+        <nav>
+            <a href="index.html">ホーム</a>
+            <a href="terms.html">利用規約</a>
+            <a href="privacy.html">プライバシーポリシー</a>
+            <a href="contact.html" class="active">お問い合わせ</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="contact-modern-wrapper">
+            
+            <div class="contact-info-side">
+                <h1>お問い合わせ</h1>
+                <p>WebTools Proをご利用いただきありがとうございます。<br>ツールに関するご意見、ご要望、バグのご報告、その他ご不明な点がございましたら、こちらのフォームよりお気軽にお寄せください。</p>
+                
+                <div class="info-card">
+                    <h3>💡 フィードバック歓迎</h3>
+                    <p>「こんな機能が欲しい」「ここが使いにくい」といったお声が、ツールの改善に直結します。</p>
+                </div>
+                
+                <div class="info-card">
+                    <h3>⏱ お返事について</h3>
+                    <p>ご記入いただいた内容によってはお返事にお時間をいただく場合や、個別にお答えできない場合がございます。あらかじめご了承ください。</p>
+                </div>
+            </div>
+
+            <div class="contact-form-side">
+                <form action="https://formspree.io/f/mojgldpa" method="POST">
+                    
+                    <div class="form-group">
+                        <label for="name">お名前（ニックネーム可）</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="name" name="name" required placeholder="例: ツール太郎">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">メールアドレス</label>
+                        <div class="input-wrapper">
+                            <input type="email" id="email" name="email" required placeholder="例: info@example.com">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">件名</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="subject" name="subject" required placeholder="例: 画像リサイザーの機能追加について">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">お問い合わせ内容</label>
+                        <div class="input-wrapper">
+                            <textarea id="message" name="message" required placeholder="詳しい内容をご記入ください。"></textarea>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        送信する
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    </button>
+                </form>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">ホーム</a>
+            <a href="terms.html">利用規約</a>
+            <a href="privacy.html">プライバシーポリシー</a>
+            <a href="contact.html" class="active">お問い合わせ</a>
+        </div>
+        <div class="copyright">&copy; 2026 WebTools Pro. All rights reserved.</div>
+        <div class="footer-note">※当サイトのツールは全て端末内(ローカル)で処理されるため、データが外部に送信されることはありません。</div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マイ・QRコードジェネレーター | WebTools Pro</title>
+    <link rel="icon" href="logo.jpg">
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    
+    <style>
+        /* QRツール用のコンテナ幅拡張（PCで2カラムにするため広めに設定） */
+        .qr-container {
+            max-width: 960px;
+        }
+
+        h2.tool-heading {
+            text-align: center;
+            color: var(--primary-cyan);
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+            margin-top: 0;
+            margin-bottom: 35px;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--text-main);
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-cyan);
+            background-color: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 0 4px rgba(0, 242, 254, 0.15);
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .remove-logo-btn {
+            display: inline-block;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-top: 8px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .remove-logo-btn:hover {
+            background-color: #c0392b;
+        }
+
+        input[type="color"] {
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            height: 44px;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px;
+            box-sizing: border-box;
+            transition: all 0.2s;
+        }
+        input[type="color"]:hover {
+            border-color: var(--primary-cyan);
+        }
+
+        /* ビジュアルセレクター */
+        .visual-picker {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .visual-option {
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 12px 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--text-muted);
+        }
+
+        .visual-option:hover {
+            border-color: var(--primary-cyan);
+            background-color: rgba(0, 242, 254, 0.05);
+            transform: translateY(-1px);
+        }
+
+        .visual-option.selected {
+            border-color: var(--primary-cyan);
+            background-color: rgba(0, 242, 254, 0.1);
+            color: var(--primary-cyan);
+            box-shadow: 0 4px 12px rgba(0, 242, 254, 0.2);
+        }
+
+        .visual-option svg {
+            width: 38px;
+            height: 38px;
+            margin-bottom: 6px;
+        }
+
+        .visual-option span {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        /* プレビューとボタン */
+        #canvas-container {
+            text-align: center;
+            background-color: #ffffff; /* QRコードの視認性維持のため白背景 */
+            padding: 25px;
+            border-radius: 14px;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 290px;
+            box-sizing: border-box;
+        }
+
+        #canvas-container canvas {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        button.download-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ff6b00 0%, #ff3c00 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 20px rgba(255, 107, 0, 0.25);
+        }
+
+        button.download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 0, 0.4);
+        }
+
+        /* PC・タブレット向け 2カラムレイアウト */
+        .layout-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .layout-wrapper {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 45px;
+            }
+            .controls-panel { flex: 1.1; }
+            .preview-panel {
+                flex: 0.9;
+                position: sticky;
+                top: 110px; /* 固定ヘッダーの高さ + 余白 */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">
+            <img src="logo.jpg" alt="WebTools Pro" class="logo-img">
+            <span class="logo-text">WebTools Pro</span>
+        </a>
+        <nav>
+            <a href="index.html">ホーム</a>
+            <a href="terms.html">利用規約</a>
+            <a href="privacy.html">プライバシーポリシー</a>
+            <a href="contact.html">お問い合わせ</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container qr-container">
+            <h2 class="tool-heading">QRコードジェネレーター</h2>
+            
+            <div class="layout-wrapper">
+                <div class="controls-panel">
+                    <div class="form-group">
+                        <label>① URL または テキスト</label>
+                        <input type="text" id="data-input" value="https://google.com" oninput="triggerUpdate()">
+                    </div>
+                    <div class="form-group">
+                        <label>② フレームに入れる文字 (任意)</label>
+                        <input type="text" id="bottom-text" value="SCAN ME" placeholder="例:SCAN ME" oninput="triggerUpdate()">
+                    </div>
+                    <div class="form-group">
+                        <label>③ フレームの種類 (枠デザイン)</label>
+                        <div class="visual-picker" id="frame-picker">
+                            <div class="visual-option selected" onclick="selectVisual('frame', 'none', this)">
+                                <svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="currentColor"/></svg>
+                                <span>なし</span>
+                            </div>
+                            <div class="visual-option" onclick="selectVisual('frame', 'border', this)">
+                                <svg viewBox="0 0 40 40">
+                                    <rect x="4" y="4" width="32" height="32" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    <rect x="12" y="12" width="16" height="16" fill="#cbd5e1"/>
+                                </svg>
+                                <span>スリム枠</span>
+                            </div>
+                            <div class="visual-option" onclick="withOption(this, () => selectVisual('frame', 'dash', this))">
+                                <svg viewBox="0 0 40 40">
+                                    <rect x="4" y="4" width="32" height="32" rx="4" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4"/>
+                                    <rect x="12" y="12" width="16" height="16" fill="#cbd5e1"/>
+                                </svg>
+                                <span>ステッチ枠</span>
+                            </div>
+                            <div class="visual-option" onclick="selectVisual('frame', 'ribbon', this)">
+                                <svg viewBox="0 0 40 40">
+                                    <rect x="6" y="4" width="28" height="24" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    <rect x="6" y="26" width="28" height="10" fill="currentColor"/>
+                                    <rect x="12" y="8" width="16" height="16" fill="#cbd5e1"/>
+                                </svg>
+                                <span>SCAN ME帯</span>
+                            </div>
+                            <div class="visual-option" onclick="selectVisual('frame', 'speech', this)">
+                                <svg viewBox="0 0 40 40">
+                                    <rect x="4" y="4" width="32" height="24" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    <polygon points="16,28 24,28 20,34" fill="currentColor"/>
+                                    <rect x="12" y="8" width="16" height="14" fill="#cbd5e1"/>
+                                </svg>
+                                <span>吹き出し</span>
+                            </div>
+                            <div class="visual-option" onclick="selectVisual('frame', 'card', this)">
+                                <svg viewBox="0 0 40 40">
+                                    <rect x="4" y="2" width="32" height="36" rx="4" fill="currentColor"/>
+                                    <rect x="8" y="6" width="24" height="20" rx="2" fill="#ffffff"/>
+                                </svg>
+                                <span>カード風</span>
+                            </div>
+                        </div>
+                        <input type="hidden" id="frame-type" value="none">
+                    </div>
+                    <div class="form-group" id="frame-color-group">
+                        <label>④ フレームの色</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="frame-color" value="#00f2fe" oninput="triggerUpdate()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>⑤ QRコードのドットの形</label>
+                        <div class="visual-picker" id="dots-picker">
+                            <div class="visual-option selected" onclick="selectVisual('dots', 'square', this)">
+                                <svg viewBox="0 0 40 40">
+                                    <rect x="8" y="8" width="10" height="10" fill="currentColor"/>
+                                    <rect x="22" y="8" width="10" height="10" fill="currentColor"/>
+                                    <rect x="8" y="22" width="10" height="10" fill="currentColor"/>
+                                    <rect x="22" y="22" width="10" height="10" fill="currentColor"/>
+                                </svg>
+                                <span>四角(標準)</span>
+                            </div>
+                            <div class="visual-option" onclick="selectVisual('dots', 'dots', this)">
+                                <svg viewBox="0 0 40 40">
+                                    <circle cx="13" cy="13" r="5" fill="currentColor"/>
+                                    <circle cx="27" cy="13" r="5" fill="currentColor"/>
+                                    <circle cx="13" cy="27" r="5" fill="currentColor"/>
+                                    <circle cx="27" cy="27" r="5" fill="currentColor"/>
+                                </svg>
+                                <span>丸(ドット)</span>
+                            </div>
+                            <div class="visual-option" onclick="selectVisual('dots', 'rounded', this)">
+                                <svg viewBox="0 0 40 40">
+                                    <rect x="8" y="8" width="10" height="10" rx="3" fill="currentColor"/>
+                                    <rect x="22" y="8" width="10" height="10" rx="3" fill="currentColor"/>
+                                    <rect x="8" y="22" width="10" height="10" rx="3" fill="currentColor"/>
+                                    <rect x="22" y="22" width="10" height="10" rx="3" fill="currentColor"/>
+                                </svg>
+                                <span>角丸</span>
+                            </div>
+                            <div class="visual-option" onclick="selectVisual('dots', 'classy', this)">
+                                <svg viewBox="0 0 40 40">
+                                    <path d="M13,8 A5,5 0 0,0 8,13 A5,5 0 0,0 13,18 A5,5 0 0,0 18,13 A5,5 0 0,0 13,8 M27,8 A5,5 0 0,0 22,13 A5,5 0 0,0 27,18 A5,5 0 0,0 32,13 A5,5 0 0,0 27,8 Z M13,22 A5,5 0 0,0 8,27 A5,5 0 0,0 13,32 A5,5 0 0,0 18,27 A5,5 0 0,0 13,22 Z M27,22 A5,5 0 0,0 22,27 A5,5 0 0,0 27,32 A5,5 0 0,0 32,27 A5,5 0 0,0 27,22 Z" fill="currentColor"/>
+                                </svg>
+                                <span>クラシック</span>
+                            </div>
+                        </div>
+                        <input type="hidden" id="dots-type" value="square">
+                    </div>
+                    <div class="form-group">
+                        <label>⑥ QRコードの色</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="dots-color" value="#0a0e17" oninput="triggerUpdate()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>⑦ 中心に配置するロゴ画像 (任意)</label>
+                        <input type="file" id="logo-input" accept="image/*" onchange="handleLogoUpload(this)">
+                        <button type="button" id="remove-logo-btn" class="remove-logo-btn" style="display:none;" onclick="removeLogo()">ロゴを削除</button>
+                    </div>
+                </div>
+                <div class="preview-panel">
+                    <div id="canvas-container"></div>
+                    <button class="download-btn" onclick="downloadQR()">画像をダウンロード (PNG)</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">ホーム</a>
+            <a href="terms.html">利用規約</a>
+            <a href="privacy.html">プライバシーポリシー</a>
+            <a href="contact.html">お問い合わせ</a>
+        </div>
+        <div class="copyright">&copy; 2026 WebTools Pro. All rights reserved.</div>
+        <div class="footer-note">※当サイトのツールは全て端末内(ローカル)で処理されるため、データが外部に送信されることはありません。</div>
+    </footer>
+
+    <script>
+        const qrCode = new QRCodeStyling({
+            width: 250,
+            height: 250,
+            type: "canvas",
+            data: "https://google.com",
+            dotsOptions: { color: "#0a0e17", type: "square" },
+            backgroundOptions: { color: "#ffffff" }
+        });
+
+        let finalCanvasElement = null;
+        let updateTimeout = null;
+        let logoDataUrl = null; 
+
+        function handleLogoUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    logoDataUrl = e.target.result;
+                    document.getElementById("remove-logo-btn").style.display = "inline-block";
+                    triggerUpdate();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeLogo() {
+            document.getElementById("logo-input").value = "";
+            logoDataUrl = null;
+            document.getElementById("remove-logo-btn").style.display = "none";
+            triggerUpdate();
+        }
+
+        function selectVisual(category, value, element) {
+            const group = document.getElementById(category + '-picker');
+            const options = group.getElementsByClassName('visual-option');
+            for (let i = 0; i < options.length; i++) {
+                options[i].classList.remove('selected');
+            }
+            element.classList.add('selected');
+            document.getElementById(category + '-type').value = value;
+            if (category === 'frame') {
+                toggleFrameColor();
+            }
+            triggerUpdate();
+        }
+
+        function withOption(element, callback) {
+            callback();
+        }
+
+        function triggerUpdate() {
+            clearTimeout(updateTimeout);
+            updateTimeout = setTimeout(updateQR, 100); 
+        }
+
+        function toggleFrameColor() {
+            const frameType = document.getElementById("frame-type").value;
+            const group = document.getElementById("frame-color-group");
+            group.style.opacity = (frameType === "none") ? "0.5" : "1";
+        }
+
+        function updateQR() {
+            const data = document.getElementById("data-input").value;
+            const bottomText = document.getElementById("bottom-text").value.trim();
+            const frameType = document.getElementById("frame-type").value;
+            const frameColor = document.getElementById("frame-color").value;
+            const dotsType = document.getElementById("dots-type").value;
+            const dotsColor = document.getElementById("dots-color").value;
+
+            qrCode.update({
+                data: data || " ",
+                dotsOptions: { type: dotsType, color: dotsColor },
+                image: logoDataUrl || "", 
+                imageOptions: {
+                    hideBackgroundDots: true, 
+                    imageSize: 0.35,          
+                    margin: 4                 
+                }
+            });
+
+            qrCode.getRawData("png").then(blob => {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement("canvas");
+                    const ctx = canvas.getContext("2d");
+                    const qrW = img.width;
+                    const qrH = img.height;
+                    let canvasW = qrW;
+                    let canvasH = qrH;
+                    let qrX = 0;
+                    let qrY = 0;
+
+                    if (frameType === "none") {
+                        canvasW = qrW;
+                        canvasH = qrH + (bottomText ? 45 : 0);
+                        qrX = 0;
+                        qrY = 0; 
+                    } else {
+                        canvasW = qrW + 40;
+                        canvasH = qrH + 40 + (bottomText ? 40 : 0);
+                        qrX = 20;
+                        qrY = 20;
+                    }
+
+                    canvas.width = canvasW;
+                    canvas.height = canvasH;
+                    ctx.fillStyle = "#ffffff";
+                    ctx.fillRect(0, 0, canvasW, canvasH);
+
+                    if (frameType === "card") {
+                        ctx.beginPath();
+                        ctx.roundRect(0, 0, canvasW, canvasH, 16);
+                        ctx.fillStyle = frameColor;
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.roundRect(qrX - 5, qrY - 5, qrW + 10, qrH + 10, 8);
+                        ctx.fillStyle = "#ffffff";
+                        ctx.fill();
+                    }
+
+                    ctx.drawImage(img, qrX, qrY);
+
+                    if (frameType === "border") {
+                        ctx.beginPath();
+                        ctx.roundRect(8, 8, canvasW - 16, canvasH - 16, 12);
+                        ctx.strokeStyle = frameColor;
+                        ctx.lineWidth = 4;
+                        ctx.stroke();
+                    }
+
+                    if (frameType === "dash") {
+                        ctx.beginPath();
+                        ctx.roundRect(10, 10, canvasW - 20, canvasH - 20, 12);
+                        ctx.strokeStyle = frameColor;
+                        ctx.lineWidth = 3;
+                        ctx.setLineDash([8, 6]);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+
+                    if (frameType === "ribbon") {
+                        ctx.beginPath();
+                        ctx.roundRect(8, 8, canvasW - 16, canvasH - 16, 12);
+                        ctx.strokeStyle = frameColor;
+                        ctx.lineWidth = 4;
+                        ctx.stroke();
+                        if (bottomText) {
+                            ctx.fillStyle = frameColor;
+                            ctx.fillRect(8, qrY + qrH + 10, canvasW - 16, 36);
+                        }
+                    }
+
+                    if (frameType === "speech") {
+                        ctx.beginPath();
+                        ctx.roundRect(8, 8, canvasW - 16, canvasH - 16, 16);
+                        ctx.strokeStyle = frameColor;
+                        ctx.lineWidth = 3;
+                        ctx.stroke();
+
+                        if (bottomText) {
+                            let bubbleY = qrY + qrH + 10;
+                            ctx.beginPath();
+                            ctx.moveTo(canvasW / 2 - 12, bubbleY + 2);
+                            ctx.lineTo(canvasW / 2 + 12, bubbleY + 2);
+                            ctx.lineTo(canvasW / 2, bubbleY - 10);
+                            ctx.fillStyle = frameColor;
+                            ctx.fill();
+                            ctx.beginPath();
+                            ctx.roundRect(qrX, bubbleY, qrW, 36, 18);
+                            ctx.fillStyle = frameColor;
+                            ctx.fill();
+                        }
+                    }
+
+                    if (bottomText) {
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+
+                        if (frameType === "ribbon" || frameType === "speech") {
+                            ctx.fillStyle = "#ffffff";
+                            ctx.font = "bold 16px 'Helvetica Neue', Arial, sans-serif";
+                            let textOffsetY = (frameType === "speech") ? 4 : 0;
+                            ctx.fillText(bottomText, canvasW / 2, qrY + qrH + 10 + 18 + textOffsetY);
+                        } else {
+                            ctx.fillStyle = dotsColor;
+                            ctx.font = "bold 16px 'Helvetica Neue', Arial, sans-serif";
+                            ctx.fillText(bottomText, canvasW / 2, canvasH - 22);
+                        }
+                    }
+
+                    const container = document.getElementById("canvas-container");
+                    container.innerHTML = "";
+                    container.appendChild(canvas);
+
+                    finalCanvasElement = canvas;
+                };
+
+                img.src = URL.createObjectURL(blob);
+            });
+        }
+
+        function downloadQR() {
+            if (finalCanvasElement) {
+                const link = document.createElement("a");
+                link.download = "custom-qrcode.png";
+                link.href = finalCanvasElement.toDataURL("image/png");
+                link.click();
+            }
+        }
+
+        window.onload = function() {
+            toggleFrameColor();
+            updateQR();
+        };
+    </script>
+</body>
+</html>

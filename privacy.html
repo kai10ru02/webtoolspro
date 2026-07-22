@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プライバシーポリシー | WebTools Pro</title>
+    <link rel="icon" href="logo.jpg">
+    
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* ベースレイアウト */
+        .privacy-modern-wrapper {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        /* 左側：サイドナビゲーション（目次） */
+        .privacy-sidebar {
+            position: sticky;
+            top: 100px; /* 固定ヘッダーの下に収まるように調整 */
+            background: #f8f9fa;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .privacy-sidebar h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .privacy-sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .privacy-sidebar li {
+            margin-bottom: 12px;
+        }
+        .privacy-sidebar a {
+            color: #555;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+            display: block;
+            line-height: 1.4;
+        }
+        .privacy-sidebar a:hover {
+            color: #4facfe;
+        }
+
+        /* 右側：本文コンテンツエリア */
+        .privacy-content-side {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .privacy-content-side h1 {
+            font-size: 2.2rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #333;
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .privacy-lead {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 40px;
+        }
+
+        /* 見出し（H2）の装飾 */
+        .privacy-content-side h2 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.4rem;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            color: #333;
+        }
+        .privacy-content-side h2 svg {
+            color: #4facfe;
+            flex-shrink: 0;
+        }
+
+        .privacy-content-side p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        /* データのローカル処理に関する特別カード */
+        .security-highlight-card {
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.03) 0%, rgba(79, 172, 254, 0.07) 100%);
+            border: 2px solid rgba(79, 172, 254, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .security-highlight-card h2 {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-top: 0;
+            color: #0076c6;
+        }
+        .security-highlight-card h2 svg {
+            color: #4facfe;
+        }
+        .security-highlight-card p {
+            margin-bottom: 0;
+        }
+
+        .date-badge {
+            margin-top: 50px;
+            text-align: right;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        /* レスポンシブ対応（スマホ表示） */
+        @media (max-width: 900px) {
+            .privacy-modern-wrapper {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                padding: 0 15px;
+            }
+            .privacy-sidebar {
+                position: static;
+                padding: 20px;
+            }
+            .privacy-content-side {
+                padding: 25px;
+            }
+            .privacy-content-side h1 {
+                font-size: 1.8rem;
+            }
+            .privacy-content-side h2 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">
+            <img src="logo.jpg" alt="WebTools Pro" class="logo-img">
+            <span class="logo-text">WebTools Pro</span>
+        </a>
+        <nav>
+            <a href="index.html">ホーム</a>
+            <a href="terms.html">利用規約</a>
+            <a href="privacy.html" class="active">プライバシーポリシー</a>
+            <a href="contact.html">お問い合わせ</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="privacy-modern-wrapper">
+            
+            <nav class="privacy-sidebar" aria-label="ページ内目次">
+                <h3>INDEX</h3>
+                <ul>
+                    <li><a href="#local-processing">データのローカル処理</a></li>
+                    <li><a href="#collected-info">収集する情報について</a></li>
+                    <li><a href="#analytics">アクセス解析ツール</a></li>
+                    <li><a href="#disclaimer">免責事項</a></li>
+                    <li><a href="#changes">ポリシーの変更</a></li>
+                </ul>
+            </nav>
+
+            <div class="privacy-content-side">
+                <h1>プライバシーポリシー</h1>
+                <p class="privacy-lead">WebTools Pro（以下、「当サイト」といいます）は、ユーザーの皆さまの個人情報およびプライバシーの保護を最重要視しています。本ポリシーでは、当サイトにおける情報の取り扱いについてご説明いたします。</p>
+
+                <div id="local-processing" class="security-highlight-card">
+                    <h2>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        データのローカル処理について（重要）
+                    </h2>
+                    <p>当サイトが提供する画像編集、音声処理、PDF結合、パスワード生成などのすべてのツールは、<strong>ユーザーのウェブブラウザ上（ローカル環境）でのみ実行されます。</strong></p>
+                    <p style="margin-top: 10px;">ユーザーがツールに読み込ませた画像、音声、ドキュメントなどのファイルデータや、生成されたパスワード等の機密情報が、当サイトのサーバーにアップロードされることや、外部へ送信されることは一切ありません。完全にオフラインと同様の安全性でご利用いただけます。</p>
+                </div>
+
+                <div id="collected-info">
+                    <h2>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        収集する情報について
+                    </h2>
+                    <p>当サイトのツールを利用するにあたり、ユーザー登録や個人情報（氏名、住所、メールアドレス等）の入力は一切不要であり、当サイトがこれらの情報を意図的に収集することはありません。</p>
+                </div>
+
+                <div id="analytics">
+                    <h2>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        アクセス解析ツールについて
+                    </h2>
+                    <p>当サイトでは、サービスの向上や利便性の改善を目的として、アクセス解析ツール（Google Analytics等）を使用する場合があります。これらのツールはトラフィックデータの収集のためにCookie（クッキー）を使用しています。<br>このトラフィックデータは匿名で収集されており、個人を特定するものではありません。ユーザーはブラウザの設定によりCookieを無効にすることで、この収集を拒否することができます。</p>
+                </div>
+
+                <div id="disclaimer">
+                    <h2>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        免責事項
+                    </h2>
+                    <p>当サイトからのリンクやバナーなどで移動した先の外部サイトで提供される情報、サービス等について、当サイトは一切の責任を負いません。<br>また、当サイトのツールの利用によって生じたソフトウェア、ハードウェア上のトラブルやその他の損害についても責任を負いかねます。</p>
+                </div>
+
+                <div id="changes">
+                    <h2>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+                        プライバシーポリシーの変更
+                    </h2>
+                    <p>当サイトは、個人情報に関して適用される日本の法令を遵守するとともに、本ポリシーの内容を適宜見直し、その改善に努めます。修正された最新のプライバシーポリシーは常に本ページにて開示されます。</p>
+                </div>
+
+                <div class="date-badge">制定日：2026年7月21日</div>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">ホーム</a>
+            <a href="terms.html">利用規約</a>
+            <a href="privacy.html" class="active">プライバシーポリシー</a>
+            <a href="contact.html">お問い合わせ</a>
+        </div>
+        <div class="copyright">&copy; 2026 WebTools Pro. All rights reserved.</div>
+        <div class="footer-note">※当サイトのツールは全て端末内(ローカル)で処理されるため、データが外部に送信されることはありません。</div>
+    </footer>
+
+</body>
+</html>

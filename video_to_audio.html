@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>動画から音声抽出ツール | WebTools Pro</title>
+    <link rel="icon" href="logo.jpg">
+    
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
+    
+    <style>
+        .tool-heading {
+            text-align: center;
+            background: linear-gradient(45deg, var(--primary-cyan), #4facfe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.7rem;
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 35px;
+        }
+
+        .drop-zone {
+            border: 2px dashed rgba(0, 242, 254, 0.4);
+            padding: 40px 20px;
+            border-radius: 16px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: var(--primary-cyan);
+            background-color: rgba(0, 242, 254, 0.05);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.1) inset;
+        }
+        .drop-zone svg {
+            width: 55px;
+            height: 55px;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+            transition: 0.2s;
+        }
+        .drop-zone:hover svg, .drop-zone.dragover svg {
+            color: var(--primary-cyan);
+            transform: scale(1.05);
+        }
+        .drop-zone p { margin: 0; font-size: 0.95rem; color: #d1d1e9; font-weight: bold; line-height: 1.6; }
+        .file-select-link { color: var(--primary-cyan); text-decoration: underline; }
+
+        .file-info-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .file-details {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            flex: 1;
+            margin-right: 15px;
+        }
+        .file-name {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+        .file-size { font-size: 0.8rem; color: #a0a0c0; }
+        .remove-btn {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+            transition: 0.15s;
+        }
+        .remove-btn:hover { background: #e74c3c; color: #ffffff; }
+
+        .format-selection { margin-top: 25px; margin-bottom: 30px; }
+        .format-label { display: block; font-size: 0.9rem; font-weight: bold; color: var(--primary-cyan); margin-bottom: 10px; }
+        .radio-group { display: flex; gap: 15px; }
+        .radio-label {
+            flex: 1; background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 12px; border-radius: 10px; text-align: center; cursor: pointer;
+            font-weight: bold; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .radio-label input { display: none; }
+        .radio-label:hover { border-color: rgba(0, 242, 254, 0.5); }
+        .radio-label.checked { border-color: var(--primary-cyan); background: rgba(0, 242, 254, 0.08); color: var(--primary-cyan); box-shadow: 0 0 15px rgba(0, 242, 254, 0.15); }
+
+        .progress-wrapper {
+            margin-top: 20px; background: rgba(0,0,0,0.2); border-radius: 10px;
+            padding: 4px; border: 1px solid rgba(255,255,255,0.05); display: none;
+        }
+        .progress-bar {
+            height: 12px; width: 0%; background: linear-gradient(90deg, var(--primary-cyan), #4facfe);
+            border-radius: 8px; transition: width 0.1s linear; box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+        }
+
+        .convert-btn {
+            width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary-cyan) 0%, #4facfe 100%);
+            color: #0f1123; border: none; border-radius: 10px; font-size: 1.05rem; font-weight: bold;
+            cursor: pointer; transition: all 0.2s ease; box-shadow: 0 6px 20px rgba(0, 242, 254, 0.25);
+        }
+        .convert-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 242, 254, 0.45); }
+        .convert-btn:disabled {
+            background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.3);
+            cursor: not-allowed; transform: none; box-shadow: none;
+        }
+
+        .status-msg { text-align: center; font-size: 0.9rem; margin-top: 15px; font-weight: bold; }
+        .status-success { color: var(--primary-cyan); }
+        .status-error { color: #e74c3c; }
+        .status-loading { color: #a55eea; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">
+            <img src="logo.jpg" alt="WebTools Pro" class="logo-img">
+            <span class="logo-text">WebTools Pro</span>
+        </a>
+        <nav>
+            <a href="index.html">ホーム</a>
+            <a href="terms.html">利用規約</a>
+            <a href="privacy.html">プライバシーポリシー</a>
+            <a href="contact.html">お問い合わせ</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2 class="tool-heading">動画から音声抽出ツール</h2>
+            <div class="subtitle">MP4やWebMなどの動画ファイルから、音声部分だけを抜き出して保存します。</div>
+
+            <div class="drop-zone" id="drop-zone" onclick="document.getElementById('video-input').click()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                    <line x1="7" y1="2" x2="7" y2="22"></line>
+                    <line x1="17" y1="2" x2="17" y2="22"></line>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <line x1="2" y1="7" x2="7" y2="7"></line>
+                    <line x1="2" y1="17" x2="7" y2="17"></line>
+                    <line x1="17" y1="17" x2="22" y2="17"></line>
+                    <line x1="17" y1="7" x2="22" y2="7"></line>
+                </svg>
+                <p>ここに動画ファイル(MP4等)をドラッグ＆ドロップするか、<br><span class="file-select-link">ファイルを選択</span>してください</p>
+            </div>
+            <input type="file" id="video-input" accept="video/*" style="display: none;" onchange="handleFileSelect(event)">
+
+            <div id="file-info-container">
+                <div class="file-info-card">
+                    <div class="file-details">
+                        <div class="file-name" id="display-file-name" style="color:#7f8c8d;">動画ファイルが選択されていません</div>
+                        <div class="file-size" id="display-file-size">-- MB</div>
+                    </div>
+                    <button class="remove-btn" id="remove-btn" style="display:none;" onclick="clearFile()">取り消し</button>
+                </div>
+            </div>
+
+            <div class="format-selection" id="format-selection-area">
+                <span class="format-label">抽出後の保存形式を選択：</span>
+                <div class="radio-group">
+                    <label class="radio-label checked" id="lbl-mp3">
+                        <input type="radio" name="out-format" value="mp3" checked onchange="toggleFormatStyle()"> MP3 (.mp3)
+                    </label>
+                    <label class="radio-label" id="lbl-wav">
+                        <input type="radio" name="out-format" value="wav" onchange="toggleFormatStyle()"> WAV (.wav)
+                    </label>
+                </div>
+            </div>
+
+            <button class="convert-btn" id="convert-btn" disabled onclick="startExtraction()">音声を抽出して保存</button>
+
+            <div class="progress-wrapper" id="progress-wrapper">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="status-msg" id="status-msg"></div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">ホーム</a>
+            <a href="terms.html">利用規約</a>
+            <a href="privacy.html">プライバシーポリシー</a>
+            <a href="contact.html">お問い合わせ</a>
+        </div>
+        <div class="copyright">&copy; 2026 WebTools Pro. All rights reserved.</div>
+        <div class="footer-note">※当サイトのツールは全て端末内(ローカル)で処理されるため、データが外部に送信されることはありません。</div>
+    </footer>
+
+    <script>
+        let targetFile = null;
+        const dropZone = document.getElementById("drop-zone");
+        const convertBtn = document.getElementById("convert-btn");
+        const statusMsg = document.getElementById("status-msg");
+        const progressWrapper = document.getElementById("progress-wrapper");
+        const progressBar = document.getElementById("progress-bar");
+        const removeBtn = document.getElementById("remove-btn");
+        const fileNameDisplay = document.getElementById("display-file-name");
+        const fileSizeDisplay = document.getElementById("display-file-size");
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => { e.preventDefault(); dropZone.classList.add('dragover'); }, false);
+        });
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); }, false);
+        });
+        dropZone.addEventListener('drop', (e) => {
+            const file = e.dataTransfer.files[0];
+            // 動画ファイルかどうかをチェック
+            if (file && file.type.startsWith('video/')) { loadFile(file); }
+            else { alert('動画ファイル（MP4など）を選択してください。'); }
+        }, false);
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) { loadFile(file); }
+            event.target.value = '';
+        }
+
+        function loadFile(file) {
+            targetFile = file;
+            fileNameDisplay.innerText = file.name;
+            fileNameDisplay.style.color = "#ffffff";
+            fileSizeDisplay.innerText = (file.size / (1024 * 1024)).toFixed(2) + " MB";
+            
+            removeBtn.style.display = "inline-block";
+            convertBtn.disabled = false;
+            statusMsg.innerText = "";
+            progressWrapper.style.display = "none";
+        }
+
+        function clearFile() {
+            targetFile = null;
+            fileNameDisplay.innerText = "動画ファイルが選択されていません";
+            fileNameDisplay.style.color = "#7f8c8d";
+            fileSizeDisplay.innerText = "-- MB";
+            
+            removeBtn.style.display = "none";
+            convertBtn.disabled = true;
+            statusMsg.innerText = "";
+            progressWrapper.style.display = "none";
+        }
+
+        function toggleFormatStyle() {
+            const isMp3 = document.querySelector('input[name="out-format"]:checked').value === 'mp3';
+            document.getElementById("lbl-mp3").classList.toggle("checked", isMp3);
+            document.getElementById("lbl-wav").classList.toggle("checked", !isMp3);
+        }
+
+        async function startExtraction() {
+            if (!targetFile) return;
+
+            convertBtn.disabled = true;
+            statusMsg.className = "status-msg status-loading";
+            statusMsg.innerText = "動画から音声を分離しています...";
+            progressWrapper.style.display = "block";
+            progressBar.style.width = "5%";
+
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const arrayBuffer = await targetFile.arrayBuffer();
+                
+                progressBar.style.width = "20%";
+                statusMsg.innerText = "音声データをデコード中...";
+                
+                const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+                const format = document.querySelector('input[name="out-format"]:checked').value;
+                let resultBlob;
+
+                if (format === "wav") {
+                    statusMsg.innerText = "WAV形式へ出力中...";
+                    progressBar.style.width = "50%";
+                    await new Promise(res => setTimeout(res, 50)); 
+                    resultBlob = audioBufferToWav(audioBuffer);
+                    progressBar.style.width = "100%";
+                } else if (format === "mp3") {
+                    statusMsg.innerText = "MP3形式へ圧縮・エンコード中...";
+                    resultBlob = await audioBufferToMp3(audioBuffer, (percent) => {
+                        progressBar.style.width = (20 + (percent * 0.8)) + "%";
+                        statusMsg.innerText = `MP3変換中... ${percent}%`;
+                    });
+                }
+
+                const url = URL.createObjectURL(resultBlob);
+                const link = document.createElement("a");
+                link.href = url;
+                const baseName = targetFile.name.substring(0, targetFile.name.lastIndexOf('.')) || targetFile.name;
+                link.download = `${baseName}_audio.${format}`;
+                link.click();
+
+                statusMsg.className = "status-msg status-success";
+                statusMsg.innerText = "抽出が完了しました！音声ファイルがダウンロードされました。";
+            } catch (error) {
+                console.error(error);
+                statusMsg.className = "status-msg status-error";
+                statusMsg.innerText = "エラーが発生しました。音声が含まれていないか、対応していない動画形式です。";
+            } finally {
+                convertBtn.disabled = false;
+            }
+        }
+
+        function audioBufferToWav(buffer) {
+            let numOfChan = buffer.numberOfChannels,
+                length = buffer.length * numOfChan * 2 + 44,
+                bufferArr = new ArrayBuffer(length),
+                view = new DataView(bufferArr),
+                channels = [], i, sample, offset = 0, pos = 0;
+
+            function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+            function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+
+            setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157);
+            setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(numOfChan);
+            setUint32(buffer.sampleRate); setUint32(buffer.sampleRate * numOfChan * 2);
+            setUint16(numOfChan * 2); setUint16(16); setUint32(0x61746164);
+            setUint32(length - pos - 4);
+
+            for (i = 0; i < numOfChan; i++) channels.push(buffer.getChannelData(i));
+
+            while (pos < length) {
+                for (i = 0; i < numOfChan; i++) {
+                    sample = Math.max(-1, Math.min(1, channels[i][offset]));
+                    sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+                    view.setInt16(pos, sample, true); pos += 2;
+                }
+                offset++;
+            }
+            return new Blob([bufferArr], { type: "audio/wav" });
+        }
+
+        async function audioBufferToMp3(buffer, onProgress) {
+            const channels = buffer.numberOfChannels;
+            const sampleRate = buffer.sampleRate;
+            const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, 128);
+            const mp3Data = [];
+
+            const sampleBlockSize = 1152;
+            const leftData = buffer.getChannelData(0);
+            const rightData = channels > 1 ? buffer.getChannelData(1) : leftData;
+
+            const convertFloat32ToInt16 = (f32Arr) => {
+                const i16Arr = new Int16Array(f32Arr.length);
+                for (let i = 0; i < f32Arr.length; i++) {
+                    let s = Math.max(-1, Math.min(1, f32Arr[i]));
+                    i16Arr[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+                }
+                return i16Arr;
+            };
+
+            const leftInt16 = convertFloat32ToInt16(leftData);
+            const rightInt16 = convertFloat32ToInt16(rightData);
+
+            let i = 0;
+            const totalSamples = leftInt16.length;
+            let lastYieldTime = performance.now();
+
+            while (i < totalSamples) {
+                const leftChunk = leftInt16.subarray(i, i + sampleBlockSize);
+                const rightChunk = rightInt16.subarray(i, i + sampleBlockSize);
+                
+                let mp3buf;
+                if (channels === 1) {
+                    mp3buf = mp3encoder.encodeBuffer(leftChunk);
+                } else {
+                    mp3buf = mp3encoder.encodeBuffer(leftChunk, rightChunk);
+                }
+                
+                if (mp3buf.length > 0) { mp3Data.push(mp3buf); }
+                i += sampleBlockSize;
+                
+                if (performance.now() - lastYieldTime > 30) {
+                    let percent = Math.floor((i / totalSamples) * 100);
+                    if (onProgress) onProgress(percent);
+                    await new Promise(res => setTimeout(res, 0));
+                    lastYieldTime = performance.now();
+                }
+            }
+
+            const mp3buf = mp3encoder.flush();
+            if (mp3buf.length > 0) { mp3Data.push(mp3buf); }
+
+            return new Blob(mp3Data, { type: "audio/mp3" });
+        }
+    </script>
+</body>
+</html>

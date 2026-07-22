@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高機能 オーディオコンバーター | WebTools Pro</title>
+  <link rel="icon" href="logo.jpg">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
+  
+  <link rel="stylesheet" href="style.css">
+  
+  <style>
+    .container {
+      width: 100%;
+      max-width: 680px;
+      margin: 40px auto;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 242, 254, 0.2);
+      border-radius: 20px;
+      padding: 35px 30px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 242, 254, 0.1);
+      box-sizing: border-box;
+    }
+    
+    .container h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 8px;
+      background: linear-gradient(45deg, #00f2fe, #4facfe);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    p.subtitle {
+      font-size: 0.9rem;
+      color: #b3b3cc;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    /* ドラッグ＆ドロップエリア */
+    .drop-zone {
+      border: 2px dashed rgba(0, 242, 254, 0.4);
+      border-radius: 12px;
+      padding: 35px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(0, 242, 254, 0.02);
+      margin-bottom: 25px;
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: #00f2fe;
+      background: rgba(0, 242, 254, 0.08);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+    }
+    .drop-zone-icon { font-size: 2.5rem; margin-bottom: 10px; }
+    .drop-zone-text { font-size: 0.95rem; color: #d1d1e9; font-weight: bold; }
+    .drop-zone-subtext { font-size: 0.8rem; color: #7a7a9a; margin-top: 5px; }
+    #fileInput { display: none; }
+
+    /* 設定エリア */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    .setting-group { display: flex; flex-direction: column; gap: 8px; }
+    label { font-size: 0.85rem; font-weight: bold; color: #a0a0c0; }
+    select {
+      background: rgba(15, 17, 35, 0.8);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      color: #ffffff;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    select:focus { border-color: #00f2fe; }
+
+    /* 変換ボタン */
+    .btn-convert {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(45deg, #00f2fe, #0072ff);
+      border: none;
+      border-radius: 10px;
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+    }
+    .btn-convert:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 242, 254, 0.5);
+    }
+    .btn-convert:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+
+    /* プログレスバー */
+    .progress-container { margin-top: 25px; display: none; }
+    .progress-bar-bg { width: 100%; height: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 5px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #00f2fe, #4facfe); transition: width 0.1s ease; }
+    .progress-text { font-size: 0.85rem; color: #00f2fe; text-align: center; margin-top: 8px; }
+
+    /* ファイルリスト＆ダウンロード */
+    .file-list { margin-top: 25px; display: flex; flex-direction: column; gap: 12px; }
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 12px 16px;
+    }
+    .file-info { display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
+    .file-name { font-size: 0.9rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px; }
+    .file-size { font-size: 0.78rem; color: #8888a0; }
+    .btn-download {
+      padding: 8px 16px;
+      background: rgba(0, 242, 254, 0.15);
+      border: 1px solid #00f2fe;
+      border-radius: 6px;
+      color: #00f2fe;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: bold;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    .btn-download:hover { background: #00f2fe; color: #0f1123; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">
+      <img src="logo.jpg" alt="WebTools Pro" class="logo-img">
+      <span class="logo-text">WebTools Pro</span>
+    </a>
+    <nav>
+      <a href="index.html">ホーム</a>
+      <a href="terms.html">利用規約</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="contact.html">お問い合わせ</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <h1>高機能 オーディオコンバーター</h1>
+      <p class="subtitle">ブラウザ内で安全・高速変換（ファイルは外部送信されません）</p>
+
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-zone-icon">🎵</div>
+        <div class="drop-zone-text">音楽ファイルをドラッグ＆ドロップ</div>
+        <div class="drop-zone-subtext">またはクリックしてファイルを選択 (M4A, WAV, FLAC, OGG等)</div>
+        <input type="file" id="fileInput" accept="audio/*" multiple>
+      </div>
+
+      <div class="settings-grid">
+        <div class="setting-group">
+          <label for="formatSelect">変換後フォーマット</label>
+          <select id="formatSelect">
+            <option value="mp3">MP3 (.mp3)</option>
+            <option value="wav">WAV (.wav)</option>
+          </select>
+        </div>
+        <div class="setting-group">
+          <label for="bitrateSelect">MP3 ビットレート</label>
+          <select id="bitrateSelect">
+            <option value="320">320 kbps (最高音質)</option>
+            <option value="256">256 kbps (高音質)</option>
+            <option value="192" selected>192 kbps (標準)</option>
+            <option value="128">128 kbps (軽量)</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn-convert" id="convertBtn" disabled>データを変換し、保存する</button>
+
+      <div class="progress-container" id="progressContainer">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">処理中... 0%</div>
+      </div>
+
+      <div class="file-list" id="fileList"></div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">ホーム</a>
+      <a href="terms.html">利用規約</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="contact.html">お問い合わせ</a>
+    </div>
+    <div class="copyright">&copy; 2026 WebTools Pro. All rights reserved.</div>
+    <div class="footer-note">※当サイトのツールは全て端末内(ローカル)で処理されるため、データが外部に送信されることはありません。</div>
+  </footer>
+
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const convertBtn = document.getElementById('convertBtn');
+    const formatSelect = document.getElementById('formatSelect');
+    const bitrateSelect = document.getElementById('bitrateSelect');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBarFill = document.getElementById('progressBarFill');
+    const progressText = document.getElementById('progressText');
+    const fileList = document.getElementById('fileList');
+
+    let selectedFiles = [];
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('audio/'));
+      if (files.length > 0) {
+        addFiles(files);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const files = Array.from(e.target.files);
+      if (files.length > 0) {
+        addFiles(files);
+      }
+    });
+
+    function addFiles(files) {
+      selectedFiles = files;
+      convertBtn.disabled = false;
+      convertBtn.textContent = `${selectedFiles.length} 個のファイルを変換して保存`;
+    }
+
+    convertBtn.addEventListener('click', async () => {
+      if (selectedFiles.length === 0) return;
+
+      convertBtn.disabled = true;
+      progressContainer.style.display = 'block';
+      fileList.innerHTML = '';
+
+      const targetFormat = formatSelect.value;
+      const bitrate = parseInt(bitrateSelect.value);
+
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      const audioCtx = new AudioContext();
+
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+        progressText.textContent = `変換中 (${i + 1}/${selectedFiles.length}): ${file.name}`;
+        progressBarFill.style.width = '0%';
+
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+          let blob;
+          if (targetFormat === 'mp3') {
+            blob = await encodeMp3(audioBuffer, bitrate, (percent) => {
+              progressBarFill.style.width = `${percent}%`;
+              progressText.textContent = `変換中 (${i + 1}/${selectedFiles.length}): ${percent}%`;
+            });
+          } else {
+            blob = encodeWav(audioBuffer);
+            progressBarFill.style.width = '100%';
+          }
+
+          addDownloadItem(file.name, targetFormat, blob);
+        } catch (err) {
+          console.error(err);
+          alert(`ファイル "${file.name}" の変換に失敗しました。`);
+        }
+      }
+
+      progressText.textContent = 'すべての変換が完了しました！下からダウンロードしてください。';
+      convertBtn.disabled = false;
+      convertBtn.textContent = '追加で変換する';
+    });
+
+    async function encodeMp3(audioBuffer, kbps, onProgress) {
+      const channels = audioBuffer.numberOfChannels;
+      const sampleRate = audioBuffer.sampleRate;
+      const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+      const mp3Data = [];
+
+      const left = audioBuffer.getChannelData(0);
+      const right = channels > 1 ? audioBuffer.getChannelData(1) : left;
+
+      const totalSamples = left.length;
+      const sampleBlockSize = 1152;
+
+      const leftInt16 = new Int16Array(totalSamples);
+      const rightInt16 = new Int16Array(totalSamples);
+      for (let i = 0; i < totalSamples; i++) {
+        leftInt16[i] = Math.max(-1, Math.min(1, left[i])) * 32767;
+        rightInt16[i] = Math.max(-1, Math.min(1, right[i])) * 32767;
+      }
+
+      let i = 0;
+      let lastYieldTime = performance.now();
+
+      while (i < totalSamples) {
+        const leftChunk = leftInt16.subarray(i, i + sampleBlockSize);
+        const rightChunk = rightInt16.subarray(i, i + sampleBlockSize);
+        let mp3buf = (channels === 1) ? mp3encoder.encodeBuffer(leftChunk) : mp3encoder.encodeBuffer(leftChunk, rightChunk);
+        if (mp3buf.length > 0) mp3Data.push(mp3buf);
+        i += sampleBlockSize;
+
+        if (performance.now() - lastYieldTime > 30) {
+          let percent = Math.floor((i / totalSamples) * 100);
+          if (onProgress) onProgress(percent);
+          await new Promise(res => setTimeout(res, 0));
+          lastYieldTime = performance.now();
+        }
+      }
+
+      const mp3buf = mp3encoder.flush();
+      if (mp3buf.length > 0) mp3Data.push(mp3buf);
+      return new Blob(mp3Data, { type: "audio/mp3" });
+    }
+
+    function encodeWav(audioBuffer) {
+      const numOfChan = audioBuffer.numberOfChannels;
+      const length = audioBuffer.length * numOfChan * 2 + 44;
+      const buffer = new ArrayBuffer(length);
+      const view = new DataView(buffer);
+      const channels = [];
+      let sampleRate = audioBuffer.sampleRate;
+      let offset = 0;
+      let pos = 0;
+
+      function writeString(str) {
+        for (let i = 0; i < str.length; i++) {
+          view.setUint8(pos++, str.charCodeAt(i));
+        }
+      }
+
+      function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+      function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+
+      writeString('RIFF');
+      setUint32(length - 8);
+      writeString('WAVE');
+      writeString('fmt ');
+      setUint32(16);
+      setUint16(1);
+      setUint16(numOfChan);
+      setUint32(sampleRate);
+      setUint32(sampleRate * 2 * numOfChan);
+      setUint16(numOfChan * 2);
+      setUint16(16);
+      writeString('data');
+      setUint32(length - pos - 4);
+
+      for (let i = 0; i < audioBuffer.numberOfChannels; i++) {
+        channels.push(audioBuffer.getChannelData(i));
+      }
+
+      while (offset < audioBuffer.length) {
+        for (let i = 0; i < numOfChan; i++) {
+          let sample = Math.max(-1, Math.min(1, channels[i][offset]));
+          sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
+          view.setInt16(pos, sample, true);
+          pos += 2;
+        }
+        offset++;
+      }
+
+      return new Blob([buffer], { type: "audio/wav" });
+    }
+
+    function addDownloadItem(originalName, extension, blob) {
+      const baseName = originalName.substring(0, originalName.lastIndexOf('.')) || originalName;
+      const newName = `${baseName}_converted.${extension}`;
+      const url = URL.createObjectURL(blob);
+
+      const item = document.createElement('div');
+      item.className = 'file-item';
+      item.innerHTML = `
+        <div class="file-info">
+          <div class="file-name">${newName}</div>
+          <div class="file-size">${(blob.size / 1024 / 1024).toFixed(2)} MB</div>
+        </div>
+        <a href="${url}" download="${newName}" class="btn-download">ダウンロード</a>
+      `;
+      fileList.appendChild(item);
+    }
+  </script>
+</body>
+</html>

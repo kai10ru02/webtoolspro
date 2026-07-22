@@ -1,0 +1,326 @@
+/* ==========================================================================
+   WebTools Pro - 共通統合スタイルシート (style.css)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 変数定義 & 全体の基本設定
+   -------------------------------------------------------------------------- */
+:root {
+    --bg-color: #0f1123;
+    --text-main: #ffffff;
+    --text-muted: #b3b3cc;
+    --primary-cyan: #00f2fe;
+    --primary-pink: #ff4b2b;
+    --primary-purple: #a55eea;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+    color: var(--text-main);
+    background-color: var(--bg-color);
+    background-image:
+        radial-gradient(rgba(0, 242, 254, 0.1) 1.5px, transparent 1.5px),
+        linear-gradient(135deg, #0f1123 0%, #102a35 100%);
+    background-size: 32px 32px, 100% 100%;
+    background-attachment: fixed;
+    line-height: 1.6;
+
+    /* フッター最下部固定用のFlexbox設定 */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* メインコンテンツエリア（コンテンツを引き伸ばしてフッターを下に押す） */
+main,
+.hero,
+.tools-container,
+.container,
+.document-container,
+.contact-container {
+    flex: 1;
+}
+
+/* --------------------------------------------------------------------------
+   2. 共通ヘッダー（上部追従固定）
+   -------------------------------------------------------------------------- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 40px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(15, 17, 35, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 242, 254, 0.2);
+    width: 100%;
+}
+
+/* ロゴ全体のスタイル */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* アイコンと文字の間隔 */
+    text-decoration: none;
+}
+
+.logo-img {
+    height: 42px;
+    width: auto;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+/* 新規追加：ロゴテキストのグラデーション装飾 */
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    background: linear-gradient(45deg, var(--primary-cyan), #4facfe);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: opacity 0.2s ease;
+}
+
+.logo:hover .logo-img {
+    transform: scale(1.03);
+}
+
+.logo:hover .logo-text {
+    opacity: 0.85;
+}
+
+nav {
+    display: flex;
+    gap: 20px;
+}
+
+nav a {
+    color: #d1d1e9;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+nav a:hover,
+nav a.active {
+    color: var(--primary-cyan);
+}
+
+/* --------------------------------------------------------------------------
+   3. ホーム画面：ヒーローセクション（メインコピー）
+   -------------------------------------------------------------------------- */
+.hero {
+    text-align: center;
+    padding: 60px 20px 40px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    flex: 0; 
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    line-height: 1.3;
+    letter-spacing: 0.5px;
+}
+
+.hero h1 span {
+    background: linear-gradient(45deg, var(--primary-cyan), #4facfe);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+}
+
+/* --------------------------------------------------------------------------
+   4. ホーム画面：ツール一覧グリッド＆カード
+   -------------------------------------------------------------------------- */
+.tools-container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto 60px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    box-sizing: border-box;
+}
+
+.tool-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 28px 24px;
+    text-align: left;
+    backdrop-filter: blur(12px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.tool-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 242, 254, 0.2);
+    border-color: rgba(0, 242, 254, 0.4);
+}
+
+.tool-icon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    line-height: 1;
+}
+
+.tool-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.tool-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 25px;
+    flex-grow: 1; 
+    line-height: 1.6;
+}
+
+.btn-primary {
+    display: inline-block;
+    text-align: center;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, var(--primary-cyan) 0%, #4facfe 100%);
+    color: #0f1123;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4);
+    opacity: 0.95;
+}
+
+/* --------------------------------------------------------------------------
+   5. 各ツール・各種コンテナ用の汎用スタイル
+   -------------------------------------------------------------------------- */
+.container,
+.document-container,
+.contact-container {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 40px;
+    backdrop-filter: blur(12px);
+    margin: 40px auto;
+    max-width: 800px;
+    width: 90%;
+    box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   6. 共通フッター（最下部固定）
+   -------------------------------------------------------------------------- */
+footer {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    border-top: 1px solid var(--glass-border);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: auto; 
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    box-sizing: border-box;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.footer-links a {
+    color: #8c8ca6;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+.footer-links a:hover,
+.footer-links a.active {
+    color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   7. レスポンシブ対応 (スマートフォン向け)
+   -------------------------------------------------------------------------- */
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .logo-text {
+        font-size: 1.3rem; /* スマホ画面で文字サイズを微調整 */
+    }
+
+    nav {
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    nav a {
+        font-size: 0.85rem;
+    }
+
+    .hero {
+        padding: 40px 15px 20px 15px;
+    }
+
+    .hero h1 {
+        font-size: 1.8rem;
+    }
+
+    .hero p {
+        font-size: 0.95rem;
+    }
+
+    .tools-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        margin-bottom: 40px;
+    }
+
+    .container,
+    .document-container,
+    .contact-container {
+        padding: 25px 20px;
+        margin: 20px auto;
+    }
+}

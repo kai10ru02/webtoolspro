@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カラーパレット抽出ツール | WebTools Pro</title>
+    <link rel="icon" href="logo.jpg">
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .tool-heading {
+            text-align: center;
+            background: linear-gradient(45deg, var(--primary-cyan), #4facfe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.7rem;
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 35px;
+        }
+
+        .drop-zone {
+            border: 2px dashed rgba(0, 242, 254, 0.4);
+            padding: 40px 20px;
+            border-radius: 16px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: var(--primary-cyan);
+            background-color: rgba(0, 242, 254, 0.05);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.1) inset;
+        }
+        .drop-zone svg {
+            width: 55px;
+            height: 55px;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+            transition: 0.2s;
+        }
+        .drop-zone:hover svg, .drop-zone.dragover svg {
+            color: var(--primary-cyan);
+            transform: scale(1.05);
+        }
+        .drop-zone p { margin: 0; font-size: 0.95rem; color: #d1d1e9; font-weight: bold; line-height: 1.6; }
+        .file-select-link { color: var(--primary-cyan); text-decoration: underline; }
+
+        /* 結果エリアのレイアウト */
+        .result-area {
+            display: none;
+            margin-top: 30px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .preview-wrapper {
+            text-align: center;
+            margin-bottom: 25px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            max-height: 300px;
+        }
+        .preview-wrapper img {
+            max-width: 100%;
+            max-height: 280px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        /* カラーパレットの表示部分 */
+        .palette-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .color-box {
+            width: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: 0.2s;
+            position: relative;
+        }
+        .color-box:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-cyan);
+        }
+
+        .color-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .color-hex {
+            font-size: 0.85rem;
+            font-weight: bold;
+            font-family: monospace;
+            color: #d1d1e9;
+        }
+
+        .color-rgb {
+            font-size: 0.7rem;
+            color: #7f8c8d;
+            margin-top: 2px;
+        }
+
+        /* コピー完了のトースト（ポップアップ） */
+        .toast {
+            position: absolute;
+            top: -30px;
+            background: #2ecc71;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: 0.3s;
+            pointer-events: none;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+
+        .status-msg { text-align: center; font-size: 0.9rem; margin-top: 15px; font-weight: bold; color: var(--primary-cyan); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">
+            <img src="logo.jpg" alt="WebTools Pro" class="logo-img">
+            <span class="logo-text">WebTools Pro</span>
+        </a>
+        <nav>
+            <a href="index.html">ホーム</a>
+            <a href="terms.html">利用規約</a>
+            <a href="privacy.html">プライバシーポリシー</a>
+            <a href="contact.html">お問い合わせ</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2 class="tool-heading">カラーパレット抽出ツール</h2>
+            <div class="subtitle">画像から主要な5色をAIアルゴリズムで解析・抽出。クリックでカラーコードをコピーできます。</div>
+
+            <div class="drop-zone" id="drop-zone" onclick="document.getElementById('image-input').click()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle>
+                    <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle>
+                    <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle>
+                    <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle>
+                    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path>
+                </svg>
+                <p>ここに画像ファイルをドラッグ＆ドロップするか、<br><span class="file-select-link">ファイルを選択</span>してください</p>
+            </div>
+            <input type="file" id="image-input" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+
+            <div class="status-msg" id="status-msg"></div>
+
+            <div class="result-area" id="result-area">
+                <div class="preview-wrapper">
+                    <img id="preview-image" src="" alt="プレビュー">
+                </div>
+                
+                <div class="palette-container" id="palette-container"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">ホーム</a>
+            <a href="terms.html">利用規約</a>
+            <a href="privacy.html">プライバシーポリシー</a>
+            <a href="contact.html">お問い合わせ</a>
+        </div>
+        <div class="copyright">&copy; 2026 WebTools Pro. All rights reserved.</div>
+        <div class="footer-note">※当サイトのツールは全て端末内(ローカル)で処理されるため、データが外部に送信されることはありません。</div>
+    </footer>
+
+    <script>
+        const dropZone = document.getElementById("drop-zone");
+        const statusMsg = document.getElementById("status-msg");
+        const resultArea = document.getElementById("result-area");
+        const previewImg = document.getElementById("preview-image");
+        const paletteContainer = document.getElementById("palette-container");
+
+        // ドラッグ＆ドロップイベント設定
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => { e.preventDefault(); dropZone.classList.add('dragover'); }, false);
+        });
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); }, false);
+        });
+        dropZone.addEventListener('drop', (e) => {
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) { loadImage(file); }
+        }, false);
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) { loadImage(file); }
+            event.target.value = '';
+        }
+
+        function loadImage(file) {
+            statusMsg.innerText = "画像を解析中...";
+            resultArea.style.display = "none";
+            paletteContainer.innerHTML = ""; // 前の結果をクリア
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    previewImg.src = img.src;
+                    resultArea.style.display = "block";
+                    
+                    // 画像の色を抽出
+                    extractColors(img);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Canvasを使ってピクセルデータを取得し、K-means法で色を抽出する関数
+        function extractColors(img) {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            const maxDim = 100; // 100x100のサイズで解析
+            const scale = Math.min(maxDim / img.width, maxDim / img.height);
+            canvas.width = img.width * scale;
+            canvas.height = img.height * scale;
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            const pixels = [];
+            for (let i = 0; i < imageData.length; i += 4) {
+                if (imageData[i + 3] > 125) { // 透明ピクセルは無視
+                    pixels.push({ r: imageData[i], g: imageData[i + 1], b: imageData[i + 2] });
+                }
+            }
+
+            setTimeout(() => {
+                const colors = kMeans(pixels, 5);
+                displayPalette(colors);
+                statusMsg.innerText = "抽出完了！色をクリックするとカラーコードをコピーできます。";
+            }, 50);
+        }
+
+        // K-meansクラスタリング
+        function kMeans(pixels, k) {
+            let centroids = [];
+            for (let i = 0; i < k; i++) {
+                centroids.push(pixels[Math.floor(Math.random() * pixels.length)]);
+            }
+
+            let clusters = [];
+            const maxIterations = 10;
+
+            for (let iter = 0; iter < maxIterations; iter++) {
+                clusters = Array.from({ length: k }, () => []);
+
+                for (let p of pixels) {
+                    let minDist = Infinity;
+                    let minIndex = 0;
+                    for (let j = 0; j < k; j++) {
+                        const c = centroids[j];
+                        const dist = Math.sqrt(Math.pow(p.r - c.r, 2) + Math.pow(p.g - c.g, 2) + Math.pow(p.b - c.b, 2));
+                        if (dist < minDist) {
+                            minDist = dist;
+                            minIndex = j;
+                        }
+                    }
+                    clusters[minIndex].push(p);
+                }
+
+                let newCentroids = [];
+                for (let j = 0; j < k; j++) {
+                    if (clusters[j].length > 0) {
+                        let sumR = 0, sumG = 0, sumB = 0;
+                        for (let p of clusters[j]) {
+                            sumR += p.r; sumG += p.g; sumB += p.b;
+                        }
+                        newCentroids.push({
+                            r: Math.round(sumR / clusters[j].length),
+                            g: Math.round(sumG / clusters[j].length),
+                            b: Math.round(sumB / clusters[j].length)
+                        });
+                    } else {
+                        newCentroids.push(centroids[j]);
+                    }
+                }
+                centroids = newCentroids;
+            }
+
+            const result = centroids.map((c, i) => ({ color: c, count: clusters[i].length }));
+            result.sort((a, b) => b.count - a.count);
+            return result.map(r => r.color);
+        }
+
+        function rgbToHex(r, g, b) {
+            return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase();
+        }
+
+        function displayPalette(colors) {
+            paletteContainer.innerHTML = "";
+            
+            colors.forEach(color => {
+                const hex = rgbToHex(color.r, color.g, color.b);
+                const rgbStr = `${color.r}, ${color.g}, ${color.b}`;
+
+                const box = document.createElement("div");
+                box.className = "color-box";
+                box.onclick = () => copyToClipboard(hex, box);
+
+                box.innerHTML = `
+                    <div class="toast">Copied!</div>
+                    <div class="color-circle" style="background-color: ${hex};"></div>
+                    <div class="color-hex">${hex}</div>
+                    <div class="color-rgb">rgb(${rgbStr})</div>
+                `;
+                
+                paletteContainer.appendChild(box);
+            });
+        }
+
+        function copyToClipboard(text, boxElement) {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = boxElement.querySelector(".toast");
+                toast.classList.add("show");
+                setTimeout(() => toast.classList.remove("show"), 1500);
+            }).catch(err => {
+                console.error('コピーに失敗しました', err);
+            });
+        }
+    </script>
+</body>
+</html>
